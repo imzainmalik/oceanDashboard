@@ -12,7 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         //
-    })
+        $middleware->append(App\Http\Middleware\CaregiverMiddleware::class);
+        $middleware->append(App\Http\Middleware\FamilyMemberMiddleware::class);
+        $middleware->append(App\Http\Middleware\FamilyOwnerMiddleware::class);
+        $middleware->append(App\Http\Middleware\SeniorMiddleware::class);
+        $middleware->append(App\Http\Middleware\SuperAdminMiddleware::class);
+     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
