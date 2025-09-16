@@ -19,7 +19,7 @@ class SuperAdminController extends Controller
 
 
     public function index(){
-        return view('');
+        return view('superadmin.index');
     }
 
 

@@ -16,12 +16,13 @@ class FamilyMemberMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role->name === 'family_member') {
+        if (Auth::check() && Auth::user()->role->id == 3) {
             return $next($request);
+        } else {
+            abort(403, 'Unauthorized');
         }
-        if(!Auth::check()){
-            return $next($request);
+        if (!Auth::check()) {
+            return redirect()->route('login'); // ya abort(403) if you don't want public access
         }
-         abort(403, 'Unauthorized');
     }
 }

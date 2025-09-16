@@ -30,9 +30,9 @@ class HomeController extends Controller
     public function check_role(){
         // dd(auth()->user()->role);
         if(auth()->user()->role->id == 1){
-            return redirect()->route('superAdmin.index');
+            return redirect()->route('superadmin.index');
         }
-        elseif(auth()->user()->role->id== 2){
+        elseif(auth()->user()->role->id == 2){
             return redirect()->route('Senior.index');
         }
         elseif(auth()->user()->role->id == 3){

@@ -14,14 +14,15 @@ class SeniorMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
-         if (Auth::check() && Auth::user()->role->name === 'senior') {
+        if (Auth::check() && Auth::user()->role->id == 2) {
             return $next($request);
+        }else{
+            abort(403, 'Unauthorized');
         }
-        if(!Auth::check()){
-            return $next($request);
+        if (!Auth::check()) {
+            return redirect()->route('login'); // ya abort(403) if you don't want public access
         }
-        abort(403, 'Unauthorized');
-    }
+     }
 }

@@ -134,7 +134,7 @@
                         </label>
                         <span class="statusBadge statusBadgeGreen"></span>
                     </div>
-
+   
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox">
                         <label class="form-check-label">

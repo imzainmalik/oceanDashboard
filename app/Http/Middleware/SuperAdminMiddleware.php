@@ -15,15 +15,16 @@ class SuperAdminMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
  public function handle($request, Closure $next)
-    {
-        if (Auth::check() && Auth::user()->role->id === 1) {
+    {  
+        if (Auth::check() && Auth::user()->role->id == 1) {
             return $next($request);
+        }else{
+            abort(403, 'Unauthorized');
         }
 
-        if(!Auth::check()){
-            return $next($request);
+        if(!Auth::check()){ 
+            return redirect()->route('login'); // ya abort(403) if you don't want public access
         }
-        abort(403, 'Unauthorized');
-    }
+     }     
  
 }

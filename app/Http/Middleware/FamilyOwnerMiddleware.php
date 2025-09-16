@@ -16,12 +16,13 @@ class FamilyOwnerMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && Auth::user()->role->name === 'family_owner') {
+        if (Auth::check() && Auth::user()->role->id == 4) {
             return $next($request);
+        }else{
+            abort(403, 'Unauthorized');
         }
         if(!Auth::check()){
-            return $next($request);
+        return redirect()->route('login'); // ya abort(403) if you don't want public access
         }
-         abort(403, 'Unauthorized');
-    }
+     }
 }

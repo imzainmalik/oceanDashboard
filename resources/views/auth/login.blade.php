@@ -13,11 +13,7 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 
-
-
-@if(session('error'))
- <div class="alert alert-danger">{{session('error')}}</div>
- @endif
+ 
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
