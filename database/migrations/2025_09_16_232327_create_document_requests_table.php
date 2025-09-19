@@ -12,15 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('document_requests', function (Blueprint $table) {
-            $table->id(); 
-            $table->integer('requester_id');   // who asked for doc (user)
+            $table->id();
+        $table->integer('requester_id');   // who asked for doc (user)
             $table->integer('target_user_id'); // who should submit the doc (user)
             $table->string('title');                      // e.g. "Emergency Medical Directive"
             $table->text('message')->nullable();
             $table->datetime('expires_at');               // countdown deadline
             $table->enum('status', ['pending', 'submitted', 'expired', 'cancelled'])->default('pending');
             $table->integer('document_id')->nullable(); // FK to emergency_documents when submitted
-            $table->timestamps();
+              $table->timestamps();
         });
     }
 

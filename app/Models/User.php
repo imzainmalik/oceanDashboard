@@ -4,8 +4,6 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -48,7 +46,6 @@ class User extends Authenticatable
         ];
     }
 
-
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
@@ -59,10 +56,28 @@ class User extends Authenticatable
         return $this->belongsTo(Tenant::class);
     }
 
-
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'assignee_id', 'id');
+    }
 
     public function permissions()
     {
         return $this->hasMany(Permission::class, 'user_id', 'id');
+    }
+
+    public function poolVotings()
+    {
+        return $this->hasMany(PoolVoting::class, 'user_id');
+    }
+
+    public function pools()
+    {
+        return $this->hasMany(Pool::class, 'owner_id');
+    }
+
+    public function votingComments()
+    {
+        return $this->hasMany(VotingComment::class, 'user_id');
     }
 }

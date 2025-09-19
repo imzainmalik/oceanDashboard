@@ -9,7 +9,11 @@ class DocumentRequest extends Model
     //
 
     protected $fillable = [
-        'requester_id', 'target_user_id', 'title', 'message', 'expires_at', 'status', 'document_id',
+        'family_owner_id','requester_id', 'target_user_id', 'title', 'message', 'expires_at', 'status', 'document_id','type'
+    ];
+
+    protected $casts = [
+        'expires_at' => 'datetime', 
     ];
 
     protected $dates = ['expires_at'];
@@ -32,5 +36,5 @@ class DocumentRequest extends Model
     public function isExpired()
     {
         return $this->expires_at->isPast();
-    }
+    } 
 }

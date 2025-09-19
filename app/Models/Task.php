@@ -14,8 +14,10 @@ class Task extends Model
         'title',
         'type',
         'details',
-        'status', 
+        'status',
     ];
+
+    protected $table = 'tasks';
 
     public function owner()
     {
@@ -25,6 +27,11 @@ class Task extends Model
     public function assignee()
     {
         return $this->belongsTo(User::class, 'assignee_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'family_owner_id', 'id');
     }
 
     public function comments()

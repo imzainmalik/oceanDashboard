@@ -9,4 +9,10 @@ class Senior extends Model
     //
 
     protected $table = "seniors";
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }

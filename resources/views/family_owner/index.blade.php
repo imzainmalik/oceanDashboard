@@ -13,10 +13,11 @@
                         <div class="addBtns">
                             <a href="javascript:;" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
                                 Information</a>
-                            <a href="javascript:;" class="btn btn-secondary" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop"><i class="fab fa-plus"></i> Add
+                            <a href="{{ route('familyOwner.tasks.index') }}" class="btn btn-secondary"
+                                data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fab fa-plus"></i> Add
                                 Task</a>
-                            <a href="{{ route('familyOwner.add_member') }}" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
+                            <a href="{{ route('familyOwner.add_member') }}" class="btn btn-secondary"><i
+                                    class="fab fa-plus"></i> Add
                                 Member</a>
                         </div>
                     </div>
@@ -31,25 +32,13 @@
                                 <div class="col-md-8">
                                     <h5>Elder’s Overview</h5>
                                 </div>
-                                <div class="col-md-4 text-md-end">
-
-                                    <div class="btn-group btnIconDetail">
-                                        <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                            data-bs-display="static" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-start dropdown-menu-lg-start">
-                                            <li><a class="dropdown-item" href="#">Select</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="profile-card">
-                                    <img src="{{ asset('caregiver/assets/images/profile.png') }}" alt="">
-                                    <h6>Jake Vincent</h6>
+                                    <img src="{{ asset('display_picture/' . $senior->user->d_pic) }}" alt="">
+                                    <h6>{{ $senior->user->name }}</h6>
                                 </div>
                             </div>
                             <div class="col-lg-6">
@@ -59,7 +48,7 @@
                                     </div>
                                     <div class="txt">
                                         <span> Gender </span>
-                                        <p>Male</p>
+                                        <p>{{ $senior->gender }}</p>
                                     </div>
 
                                 </div>
@@ -70,7 +59,7 @@
                                     </div>
                                     <div class="txt">
                                         <span> Age </span>
-                                        <p>67 y.o.</p>
+                                        <p>{{ Carbon\Carbon::parse($senior->dob)->age }} y.o.</p>
                                     </div>
 
                                 </div>
@@ -81,7 +70,7 @@
                                     </div>
                                     <div class="txt">
                                         <span> Blood Type </span>
-                                        <p>B</p>
+                                        <p>{{ $senior->blood_type }}</p>
                                     </div>
 
                                 </div>
@@ -104,26 +93,6 @@
                                 <div class="col-md-9">
                                     <h5>Request & Response</h5>
                                 </div>
-
-                                <div class="col-md-2 text-md-end">
-                                    <select class="form-control daySelect">
-                                        <option>Today</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-1 text-md-center">
-
-                                    <div class="btn-group btnIconDetail">
-                                        <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                            data-bs-display="static" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Select</a></li>
-                                        </ul>
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
 
@@ -131,6 +100,7 @@
                             <div class="col-lg-12">
                                 <div class="orderTable table-responsive">
                                     <table class="table">
+
                                         <thead>
                                             <tr>
                                                 <th> Name </th>
@@ -141,118 +111,64 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div class="user"><img
-                                                            src="{{ asset('caregiver/assets/images/rs1.png') }}"
-                                                            alt="">
-                                                        <p>Jason Herwitz</p>
-                                                    </div>
-                                                </td>
-                                                <td> Bathing </td>
-                                                <td> <span class="date">11-7-2025</span> </td>
-                                                <td> <span class="badge-table badge-green">Accepted</span> </td>
-                                                <td class="text-center">
-                                                    <div class="btn-group btnIconDetail">
-                                                        <button type="button" class="dropdown-toggle"
-                                                            data-bs-toggle="dropdown" data-bs-display="static"
-                                                            aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-h"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                            <li><a class="dropdown-item" href="#">Delete</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
+                                            @forelse($requests as $task)
+                                                <tr>
+                                                    <td>
+                                                        <div class="user">
+                                                            <img src="{{ $task->assignee->d_pic
+                                                                ? asset('display_picture/' . $task->assignee->d_pic)
+                                                                : asset('caregiver/assets/images/default.png') }}"
+                                                                alt="">
+                                                            <p>{{ $task->assignee->name }}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td>{{ $task->title }}</td>
+                                                    <td><span
+                                                            class="date">{{ $task->created_at->format('d-m-Y') }}</span>
+                                                    </td>
+                                                    <td>
+                                                        @php
+                                                            $statusColors = [
+                                                                'accepted' => 'badge-green',
+                                                                'unread' => 'badge-purple',
+                                                                'declined' => 'badge-red',
+                                                                'seen_no_response' => 'badge-yellow',
+                                                                'pending' => 'badge-gray',
+                                                            ];
+                                                        @endphp
+                                                        <span
+                                                            class="badge-table {{ $statusColors[$task->status] ?? 'badge-gray' }}">
+                                                            {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <div class="btn-group btnIconDetail">
+                                                            <button type="button" class="dropdown-toggle"
+                                                                data-bs-toggle="dropdown" data-bs-display="static"
+                                                                aria-expanded="false">
+                                                                <i class="fas fa-ellipsis-h"></i>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                <li><a class="dropdown-item"
+                                                                        href="{{ route('familyOwner.tasks.edit', $task->id) }}">Edit</a>
+                                                                </li>
+                                                                <li><a class="dropdown-item" href="javascript:;"
+                                                                        onclick="deleteTask({{ $task->id }})">Delete</a>
 
-                                            <tr>
-                                                <td>
-                                                    <div class="user"><img
-                                                            src="{{ asset('caregiver/assets/images/rs2.png') }}"
-                                                            alt="">
-                                                        <p>Mira Dokidis</p>
-                                                    </div>
-                                                </td>
-                                                <td> Feeding </td>
-                                                <td> <span class="date"> 11-7-2025 </span> </td>
-                                                <td> <span class="badge-table badge-purple">Unread</span> </td>
-                                                <td class="text-center">
-                                                    <div class="btn-group btnIconDetail">
-                                                        <button type="button" class="dropdown-toggle"
-                                                            data-bs-toggle="dropdown" data-bs-display="static"
-                                                            aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-h"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                            <li><a class="dropdown-item" href="#">Delete</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    <div class="user"><img
-                                                            src="{{ asset('caregiver/assets/images/rs3.png') }}"
-                                                            alt="">
-                                                        <p>Anika Korsgaard</p>
-                                                    </div>
-                                                </td>
-                                                <td> Toileting </td>
-                                                <td> <span class="date"> 11-7-2025 </span> </td>
-                                                <td> <span class="badge-table badge-red">Declined</span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <div class="btn-group btnIconDetail">
-                                                        <button type="button" class="dropdown-toggle"
-                                                            data-bs-toggle="dropdown" data-bs-display="static"
-                                                            aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-h"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                            <li><a class="dropdown-item" href="#">Delete</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <td>
-                                                    <div class="user"><img
-                                                            src="{{ asset('caregiver/assets/images/rs4.png') }}"
-                                                            alt="">
-                                                        <p>Zaire Rhiel Madsen</p>
-                                                    </div>
-                                                </td>
-                                                <td> Medication </td>
-                                                <td> <span class="date"> 11-7-2025</span> </td>
-                                                <td> <span class="badge-table badge-yellow">Seen/No-Response</span>
-                                                </td>
-                                                <td class="text-center">
-                                                    <div class="btn-group btnIconDetail">
-                                                        <button type="button" class="dropdown-toggle"
-                                                            data-bs-toggle="dropdown" data-bs-display="static"
-                                                            aria-expanded="false">
-                                                            <i class="fas fa-ellipsis-h"></i>
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                            <li><a class="dropdown-item" href="#">Delete</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-
+                                                                        <form method=""></form>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @empty
+                                                <tr>
+                                                    <td colspan="5" class="text-center text-muted">No requests found.
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        </tbody>
                                     </table>
-
                                 </div>
                             </div>
                         </div>
@@ -271,133 +187,59 @@
                                 <div class="col-md-9">
                                     <h5>Assigned Roles Tracker</h5>
                                 </div>
-
-                                <div class="col-md-2 text-md-end">
-                                    <select class="form-control daySelect">
-                                        <option>Today</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-md-1 text-md-center">
-
-                                    <div class="btn-group btnIconDetail">
-                                        <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                            data-bs-display="static" aria-expanded="false">
-                                            <i class="fas fa-ellipsis-h"></i>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Select</a></li>
-                                        </ul>
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
                         <div class="orderTable table-responsive">
                             <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th> Task </th>
-                                        <th> Assigned To </th>
-                                        <th> Assigned On </th>
-                                        <th> Status </th>
-                                        <th> </th>
-                                    </tr>
-                                </thead>
                                 <tbody>
-                                    <tr>
+                                    @forelse($requests as $task)
+                                        <tr>
+                                            <td>{{ $task->title }}</td>
 
-                                        <td> Bathing </td>
+                                            <td>{{ $task->assignee->name ?? 'Unassigned' }}</td>
 
-                                        <td>
-                                            Jason Herwitz
-                                        </td>
+                                            <td><span class="date">{{ $task->created_at->format('d-m-Y') }}</span></td>
 
-                                        <td> <span class="date">11-7-2025</span> </td>
-                                        <td> <span class="badge-table badge-green">Accepted</span> </td>
-                                        <td class="text-center">
-                                            <div class="btn-group btnIconDetail">
-                                                <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                                    data-bs-display="static" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                    <li><a class="dropdown-item" href="#">Delete</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            <td>
+                                                @php
+                                                    $statusColors = [
+                                                        'accepted' => 'badge-green',
+                                                        'unread' => 'badge-purple',
+                                                        'declined' => 'badge-red',
+                                                        'seen_no_response' => 'badge-yellow',
+                                                        'pending' => 'badge-gray',
+                                                    ];
+                                                @endphp
+                                                <span
+                                                    class="badge-table {{ $statusColors[$task->status] ?? 'badge-gray' }}">
+                                                    {{ ucfirst(str_replace('_', ' ', $task->status)) }}
+                                                </span>
+                                            </td>
 
-                                    <tr>
-                                        <td> Feeding </td>
-                                        <td>
-                                            Mira Dokidis
-                                        </td>
-                                        <td> <span class="date"> 11-7-2025 </span> </td>
-                                        <td> <span class="badge-table badge-purple">Unread</span> </td>
-                                        <td class="text-center">
-                                            <div class="btn-group btnIconDetail">
-                                                <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                                    data-bs-display="static" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                    <li><a class="dropdown-item" href="#">Delete</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td>
-                                            Anika Korsgaard
-                                        </td>
-                                        <td> Toileting </td>
-                                        <td> <span class="date"> 11-7-2025 </span> </td>
-                                        <td> <span class="badge-table badge-red">Declined</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group btnIconDetail">
-                                                <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                                    data-bs-display="static" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                    <li><a class="dropdown-item" href="#">Delete</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <tr>
-                                        <td> Medication </td>
-                                        <td>
-                                            Zaire Rhiel Madsen
-                                        </td>
-
-                                        <td> <span class="date"> 11-7-2025</span> </td>
-                                        <td> <span class="badge-table badge-yellow">Seen/No-Response</span>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="btn-group btnIconDetail">
-                                                <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
-                                                    data-bs-display="static" aria-expanded="false">
-                                                    <i class="fas fa-ellipsis-h"></i>
-                                                </button>
-                                                <ul class="dropdown-menu">
-                                                    <li><a class="dropdown-item" href="#">Edit</a></li>
-                                                    <li><a class="dropdown-item" href="#">Delete</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            <td class="text-center">
+                                                <div class="btn-group btnIconDetail">
+                                                    <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
+                                                        data-bs-display="static" aria-expanded="false">
+                                                        <i class="fas fa-ellipsis-h"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item"
+                                                                href="{{ route('familyOwner.tasks.edit', $task->id) }}">Edit</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="dropdown-item" href="javascript:;"
+                                                                onclick="deleteTask({{ $task->id }})">Delete</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted">No tasks available.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
 
                             </table>
 
@@ -543,3 +385,21 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script>
+        function deleteTask(id) {
+            Swal.fire({
+                title: 'Warning!',
+                text: 'This action can\'t be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
+@endpush
