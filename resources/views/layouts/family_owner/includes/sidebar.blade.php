@@ -18,7 +18,10 @@
                         <a href="{{ route('familyOwner.index') }}" class="nav-item nav-link">
                             <img src="{{ asset('family_owner/assets/images/menu-icon1.svg') }}" alt=""> Overview
                         </a>
-                    </li>
+                    </li>  
+                    <li>
+                        <a href="{{ route('familyOwner.all_members') }}"><img src="{{ asset('family_owner/assets/images/menu-icon1.svg') }}" alt=""> Family members</a>
+                    </li> 
                     <li>
                         <a href="{{ route('familyOwner.logs') }}" class="nav-item nav-link"><img
                                 src="{{ asset('family_owner/assets/images/menu-icon2.svg') }}" alt="">Activity
@@ -32,13 +35,13 @@
                         </a>
                     </li>
 
-                    {{-- <li>
-                        <a href="javascript:;" class="nav-item nav-link"><img
+                    <li>
+                        <a href="{{ route('familyOwner.subscriptions.index') }}" class="nav-item nav-link"><img
                                 src="{{ asset('family_owner/assets/images/menu-icon4.svg') }}" alt="">
-                            Assigned Roles Tracker</a>
-                    </li> --}}
+                            Subscription</a>
+                    </li>
 
-                    <li> <a href="javascript:;" class="nav-item nav-link"><img
+                    <li> <a href="{{ route('familyOwner.family-notes.index') }}" class="nav-item nav-link"><img
                                 src="{{ asset('family_owner/assets/images/menu-icon5.svg') }}" alt="">
                             Family Notes & Feedback </a></li>
 
@@ -61,12 +64,7 @@
                     </li>
                 </ul>
 
-                {{-- <ul class="navFt">
-                    <span class="subNav">Support</span>
-                    <li>
-                        <a href="javascript:;"><img src="{{ asset('family_owner/assets/images/logo01.png') }}" alt=""> Settings</a>
-                    </li>
-                </ul> --}}
+                
             </div>
 
         </nav>

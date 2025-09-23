@@ -23,8 +23,12 @@ class TaskController extends Controller
     
     public function index(Request $request)
     {
-        $tasks = Task::with(['owner', 'assignee'])->select('tasks.*');
-
+    $tasks = Task::with(['owner','assignee'])
+        ->where('is_deleted', 0)
+        ->where('owner_id', auth()->user()->id)
+        ->where('assignee_id', auth()->user()->id) 
+        ->get();
+        // dd($tasks);
         if ($request->ajax()) {
             return DataTables::of($tasks)
                 ->addColumn('owner', fn ($row) => $row->owner?->name ?? '-')
@@ -111,12 +115,15 @@ class TaskController extends Controller
         return redirect()->route('familyOwner.tasks.index')->with('success', 'Task updated successfully!');
     }
 
-    public function destroy(Task $task)
+    public function destroy($task)
     {
-        $task->delete();
-        // $assignee_details = User::find($request->assignee_id);
+        // $task->delete();
+        $task_details = Task::find($task);
+        $task = Task::where('id', $task)->update(array(
+            'is_deleted' => 1
+        ));
 
-        make_log(auth()->user()->id, auth()->user()->name, "Task Deleted", " " . auth()->user()->name . " Deleted Task for" . $task->assignee->name . " ");
+        make_log(auth()->user()->id, auth()->user()->name, "Task Deleted", " " . auth()->user()->name . " Deleted Task for" . $task_details->assignee->name . " ");
 
         return redirect()->route('familyOwner.tasks.index')->with('success', 'Task deleted!');
     }

@@ -33,7 +33,7 @@ class HomeController extends Controller
             return redirect()->route('superadmin.index');
         }
         elseif(auth()->user()->role->id == 2){
-            return redirect()->route('Senior.index');
+            return redirect()->route('senior.index');
         }
         elseif(auth()->user()->role->id == 3){
             return redirect()->route('familyMember.index');

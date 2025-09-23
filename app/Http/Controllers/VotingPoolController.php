@@ -27,7 +27,8 @@ class VotingPoolController extends Controller
 
     public function data()
     {
-        $query = Pool::where('is_deleted', 0)->with('owner')->withCount('votings')->orderByDesc('created_at');
+        $query = Pool::where('is_deleted', 0)->with('owner')->withCount('votings')
+        ->where('owner_id',auth()->user()->id)->orderByDesc('created_at');
 
         return DataTables::of($query)
             ->addColumn('owner', fn ($row) => $row->owner?->name ?? '-')
@@ -84,16 +85,22 @@ class VotingPoolController extends Controller
         return view('family_owner.pools.create', compact('voting'));
     }
 
-    public function update(Request $request, Pool $pool)
+    public function update(Request $request, $pool)
     {
+        // dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'voting_expires_at' => 'nullable|date',
             'status' => 'nullable|in:open,closed,final_decision',
         ]);
-
-        $pool->update($request->only(['title', 'description', 'voting_expires_at', 'status']));
+         Pool::where('id', $pool)->update(array(
+            'title' => $request->title, 
+            'description' => $request->description, 
+            'voting_expires_at' => $request->voting_expires_at, 
+            // 'status' => $request->status
+         ));
+        // $pool->update($request->only(['title', 'description', 'voting_expires_at', 'status']));
         make_log(auth()->user()->id, auth()->user()->name, 'Updated Pool', ' '.auth()->user()->name.' Updated Pool');
 
         return redirect()->route('familyOwner.pools.index')->with('success', 'Pool updated successfully.');

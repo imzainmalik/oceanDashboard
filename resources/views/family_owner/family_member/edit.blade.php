@@ -1,13 +1,23 @@
 @extends('layouts.app')
 @section('content')
     <div class="page-box py-4">
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <div class="card">
             <div class="card-header">
                 Edit Family members
             </div>
 
             <div class="card-body">
-                <form method="post" action="{{ route('familyOwner.update_member', $user->id) }}" enctype="multipart/form-data">
+                <form method="post" action="{{ route('familyOwner.update_member', $user->id) }}"
+                    enctype="multipart/form-data">
                     @csrf
 
                     <div class="row">
@@ -24,17 +34,16 @@
 
                         <div class="col-6">
                             <label> Password</label>
-                            <input type="password" class="form-control" name="password" id="password" required />
+                            <input type="password" class="form-control" name="password" id="password" />
                         </div>
                         <div class="col-6">
                             <label>Confirm Password</label>
-                            <input type="password" class="form-control" name="cnfrm_password" id="confirm_password"
-                                required />
+                            <input type="password" class="form-control" name="cnfrm_password" id="confirm_password" />
                             <div class="invalid-feedback">Passwords do not match</div>
                         </div>
                         <div class="col-6">
                             <label> Display picture</label>
-                            <input type="file" class="form-control" name="d_pic" id="d_pic" required /><br>
+                            <input type="file" class="form-control" name="d_pic" id="d_pic" /><br>
                             <p>Preview</p>
                             <img src="{{ asset('display_picture/' . $user->d_pic) }}" style="width:200px;"
                                 class="img-thumb" />
@@ -42,21 +51,21 @@
                         <div class="col-6">
                             <label>Roles</label>
                             <select class="form-control" name="role" id="role" required>
-                                <option value="2" @if ($user->role->id == 2) selected @endif>Family Owner
+                                <option value="2" @if ($user->role->id == 4) selected @endif>Family Owner
                                 </option>
-                                <option value="3" @if ($user->role->id == 3) selected @endif>Senior</option>
-                                <option value="4" @if ($user->role->id == 4) selected @endif>Caregiver</option>
-                                <option value="5" @if ($user->role->id == 5) selected @endif>Family Member
+                                <option value="3" @if ($user->role->id == 2) selected @endif>Senior</option>
+                                <option value="4" @if ($user->role->id == 5) selected @endif>Caregiver</option>
+                                <option value="5" @if ($user->role->id == 3) selected @endif>Family Member
                                 </option>
                             </select>
-                        </div>
-                        @if ($user->role->id == 3)
+                        </div> 
+                        @if ($user->role->id == 2)
                             @php
                                 $senoir = App\Models\Senior::where('user_id', $user->id)->first();
                             @endphp
                             <div class="container mt-4">
                                 <!-- Senior-specific fields -->
-                                <div id="senior-fields" class="row mt-3 @if ($user->role->id != 3) d-none @endif">
+                                <div id="senior-fields" class="row mt-3 @if ($user->role->id != 2) d-none @endif">
                                     <div class="col-6">
                                         <label>Gender</label>
                                         <select class="form-control" name="gender">
@@ -131,52 +140,102 @@
                     </div>
 
                     <hr>
-                    {{-- @dd($user->permissions); --}}
-                    <h4>Setup Permissions</h4>
+                    {{-- @dd($user->permissions); --}} 
                     <br>
-                    <table class="table table-bordered table-striped align-middle text-center py-4">
-                        <thead class="table-dark">
-                            <tr>
-                                <th class="text-start">Features & Permission</th>
-                                {{-- <th>Super Admin</th>
-                                <th>Family Owner</th>
-                                <th>Senior</th>
-                                <th>Caregiver</th>
-                                <th>Family Member</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-start">View Bills</td>
-                                <td>
-                                    <input class="form-check-input" name="permissions[]" value="view_bills"
-                                        type="checkbox" @if ($user->permissions->contains('feature_name', 'view_bills')) checked @endif>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Upload Documents</td>
-                                <td>
-                                    <input class="form-check-input" type="checkbox" name="permissions[]"
-                                        value="upload_docs" @if ($user->permissions->contains('feature_name', 'upload_docs')) checked @endif>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Manage Caregivers</td>
-                                <td>
-                                    <input class="form-check-input" type="checkbox" name="permissions[]"
-                                        value="manage_caregivers" @if ($user->permissions->contains('feature_name', 'manage_caregivers')) checked @endif>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">View Reports</td>
-                                <td>
-                                    <input class="form-check-input" type="checkbox" name="permissions[]"
-                                        value="view_reports" @if ($user->permissions->contains('feature_name', 'view_reports')) checked @endif>
-                                </td>
-                            </tr>
-                        </tbody>
+                    <div class="container mt-4">
+                        <h3 class="mb-4">⚙️ Setup Permissions</h3>
 
-                    </table>
+                        <div class="list-group">
+
+                            <!-- View Bills -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>View Bills</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" name="permissions[]" type="checkbox" value="view_bills"
+                                        id="view_bills" @if ($user->permissions->contains('feature_name', 'view_bills')) checked @endif>
+                                    <label class="form-check-label" for="view_bills"></label>
+                                </div>
+                            </div>
+
+                            <!-- Upload Documents -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Upload Documents</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]"
+                                        value="upload_docs" @if ($user->permissions->contains('feature_name', 'upload_docs')) checked @endif
+                                        id="upload_docs">
+                                    <label class="form-check-label" for="upload_docs"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Caregivers -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Caregivers</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_caregivers"
+                                        name="permissions[]" value="manage_caregivers"
+                                        @if ($user->permissions->contains('feature_name', 'manage_caregivers')) checked @endif>
+                                    <label class="form-check-label" for="manage_caregivers"></label>
+                                </div>
+                            </div>
+
+                            <!-- View Reports -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>View Reports</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox"
+                                        id="permViewReports"name="permissions[]" value="view_reports"
+                                        @if ($user->permissions->contains('feature_name', 'view_reports')) checked @endif>
+                                    <label class="form-check-label" for="view_reports"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Tasks -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Tasks</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_tasks"
+                                        name="permissions[]" value="manage_tasks"
+                                        @if ($user->permissions->contains('feature_name', 'manage_tasks')) checked @endif>
+                                    <label class="form-check-label" for="manage_tasks"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Family Members -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Family Members</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_family_members"
+                                        name="permissions[]" value="manage_family_members"
+                                        @if ($user->permissions->contains('feature_name', 'manage_family_members')) checked @endif>
+                                    <label class="form-check-label" for="manage_family_members"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Subscription -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Subscription</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_subscription"
+                                        name="permissions[]" value="manage_subscription"
+                                        @if ($user->permissions->contains('feature_name', 'manage_subscription')) checked @endif>
+                                    <label class="form-check-label" for="manage_subscription"></label>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Documents -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Emergency Documents</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="emergency_doc"
+                                        name="permissions[]" value="emergency_doc"
+                                        @if ($user->permissions->contains('feature_name', 'emergency_doc')) checked @endif>
+                                    <label class="form-check-label" for="emergency_doc"></label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                     <br>
                     <button class="btn btn-primary" type="submit" id="registerForm">Submit</button>
                 </form>
@@ -191,7 +250,7 @@
             let seniorFields = document.getElementById('senior-fields');
             let inputs = seniorFields.querySelectorAll('input, select, textarea');
 
-            if (this.value === "3") { // Senior selected
+            if (this.value === "2") { // Senior selected
                 seniorFields.classList.remove('d-none');
                 inputs.forEach(input => input.setAttribute('required', true));
             } else {

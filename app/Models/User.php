@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_id',
+        'd_pic'
     ];
 
     /**
@@ -32,6 +34,11 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function customRole()
+    {
+         return $this->role ? lcfirst($this->role->name) : null;
+    }
 
     /**
      * Get the attributes that should be cast.

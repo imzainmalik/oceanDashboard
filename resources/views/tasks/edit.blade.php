@@ -2,6 +2,15 @@
 
 @section('content')
 <div class="container mt-4">
+            @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     <h3>Edit Task</h3>
     <form action="{{ route('familyOwner.tasks.update_task', $task->id) }}" method="post">
         @csrf
@@ -26,7 +35,7 @@
         </div>
         <div class="mb-3">
             <label>Details</label>
-            <textarea name="details" class="form-control">{{ $task->details }}</textarea>
+            <textarea name="description" class="form-control">{{ $task->details }}</textarea>
         </div>
         <button type="submit" class="btn btn-success">Update</button>
     </form>

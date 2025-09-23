@@ -13,7 +13,7 @@ class Task extends Model
         'assignee_id',
         'title',
         'type',
-        'details',
+        'description',
         'status',
     ];
 

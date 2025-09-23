@@ -1,32 +1,48 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
-        <form action="{{ route('bills.submitPayment', $bill->id) }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-                <label>Amount Paid</label>
-                <input type="number" name="amount_paid" step="0.01" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label>Payment Method</label>
-                <select name="payment_method" class="form-select">
-                    <option value="zelle">Zelle</option>
-                    <option value="cash_app">Cash App</option>
-                    <option value="other">Other</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label>Confirmation Number</label>
-                <input type="text" name="confirmation_number" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label>Upload Receipt</label>
-                <input type="file" name="receipt" class="form-control" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit Payment</button>
-        </form>
+<div class="container">
+    <h3>💳 Payment History for Bill: {{ $bill->title }}</h3>
 
+    <a href="{{ route(''.auth()->user()->customRole().'.bills.index') }}" class="btn btn-secondary mb-3">⬅ Back to Bills</a>
 
-    </div>
+    @if($payments->count() > 0)
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Transaction ID</th>
+                     <th>Submit Proof</th>
+                    <th>Status</th> 
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach($payments as $payment)
+                <tr>
+                    <td>${{ number_format($payment->amount_paid, 2) }}</td>
+                    <td>{{ ucfirst(str_replace('_',' ', $payment->payment_method)) }}</td>
+                    <td>{{ $payment->confirmation_number ?? '-' }}</td>
+                    <td><img src="{{ asset('payment_proof/'.$payment->receipt_path) }}" style="width:100px;" /></td>
+                    <td>
+                        @if($bill->status === 'approved')
+                            <span class="badge bg-success">Approved</span>
+                        @elseif($bill->status === 'rejected')
+                            <span class="badge bg-danger">Rejected</span>
+                        @else
+                            <span class="badge bg-warning text-dark">Pending Review</span>
+                        @endif
+                    </td> 
+                    <td>{{ $payment->created_at->format('d M, Y h:i A') }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <div class="alert alert-info">
+            No payments submitted yet for this bill.
+        </div>
+    @endif
+</div>
 @endsection

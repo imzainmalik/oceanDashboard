@@ -3,18 +3,26 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\DailyUpdateController;
 use App\Http\Controllers\DocumentRequestController;
 use App\Http\Controllers\FamilyMemberManageController;
+use App\Http\Controllers\FamilyNoteController;
 use App\Http\Controllers\FamilyOwnerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogController;
+use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SeniorController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\VoiceJournalController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\VotingCommentController;
 use App\Http\Controllers\VotingPoolController;
 use App\Http\Middleware\FamilyOwnerMiddleware;
+use App\Http\Middleware\SeniorMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -34,7 +42,7 @@ Route::get('/check_role', [HomeController::class, 'check_role'])->name('check_ro
 // Route::get('/login', [LoginController::class, 'login'])->name('login');
 // });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
+    
 Route::get('/familyOwner/tasks', [TaskController::class, 'index'])->name('familyOwner.tasks.index');     // DataTable page
 Route::get('/familyOwner/tasks/create', [TaskController::class, 'create'])->name('familyOwner.tasks.create');
 Route::post('/familyOwner/tasks', [TaskController::class, 'store'])->name('familyOwner.tasks.store');
@@ -57,6 +65,36 @@ Route::middleware(SuperAdminMiddleware::class)->group(function () {
     Route::get('/admin/dashboard', [SuperAdminController::class, 'index'])->name('superadmin.index');
 });
 
+Route::middleware([SeniorMiddleware::class])->group(function () {
+    Route::get('/senior/dashboard', [SeniorController::class, 'index'])->name('senior.index');
+    Route::get('/senior/daily-updates', [DailyUpdateController::class, 'index'])->name('senior.daily-updates.index');
+    Route::get('/senior/voice-journal', [VoiceJournalController::class, 'index'])->name('senior.voice-journal.index');
+    Route::get('/senior/voice-journal/create', [VoiceJournalController::class, 'create'])->name('senior.voice-journal.create');
+    Route::post('/senior/voice-journal', [VoiceJournalController::class, 'store'])->name('senior.voice-journal.store');
+
+    // List all meetings
+    Route::get('senior/meetings', [MeetingController::class, 'index'])->name('senior.meetings.index');
+    Route::get('senior/meetings/create', [MeetingController::class, 'create'])->name('senior.meetings.create');
+    Route::post('senior/meetings/store', [MeetingController::class, 'store'])->name('senior.meetings.store');
+    Route::get('senior/meetings/{meeting}', [MeetingController::class, 'show'])->name('senior.meetings.show');
+    Route::get('senior/meetings/{meeting}/edit', [MeetingController::class, 'edit'])->name('senior.meetings.edit');
+    Route::put('senior/meetings/{meeting}', [MeetingController::class, 'update'])->name('senior.meetings.update');
+    Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])->name('senior.meetings.destroy');
+
+
+    Route::get('senior/bills', [BillController::class, 'index'])->name('senior.bills.index');
+    Route::get('senior/bills/create', [BillController::class, 'create'])->name('senior.bills.create');
+    Route::post('senior/bills', [BillController::class, 'store'])->name('senior.bills.store');
+    Route::get('senior/bills/{bill}', [BillController::class, 'show'])->name('senior.bills.show');
+    Route::get('senior/bills/{bill}/edit', [BillController::class, 'edit'])->name('senior.bills.edit');
+    Route::put('senior/bills/{bill}', [BillController::class, 'update'])->name('senior.bills.update');
+    Route::delete('senior/bills/{bill}', [BillController::class, 'destroy'])->name('familyOwner.bills.destroy');
+    Route::post('senior/bills/{bill}/submit-payment', [BillController::class, 'submitPayment'])->name('senior.bills.submitPayment');
+    Route::post('senior/bill-payments/{payment}/review', [BillController::class, 'reviewPayment'])->name('senior.bills.reviewPayment');
+    Route::put('senior/bills/{bill}/approve', [BillController::class, 'approve'])->name('senior.bills.approve');
+    Route::put('senior/bills/{bill}/decline', [BillController::class, 'decline'])->name('senior.bills.decline');
+
+});
 Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
     Route::get('/familyOwner/dashboard', [FamilyOwnerController::class, 'index'])->name('familyOwner.index');
     Route::get('/familyOwner/all-members', [FamilyMemberManageController::class, 'index'])->name('familyOwner.all_members');
@@ -96,5 +134,29 @@ Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
     Route::post('familyOwner/bill-payments/{payment}/review', [BillController::class, 'reviewPayment'])->name('familyOwner.bills.reviewPayment');
     Route::put('familyOwner/bills/{bill}/approve', [BillController::class, 'approve'])->name('familyOwner.bills.approve');
     Route::put('familyOwner/bills/{bill}/decline', [BillController::class, 'decline'])->name('familyOwner.bills.decline');
+
+    Route::get('familyOwner/family-notes', [FamilyNoteController::class, 'index'])->name('familyOwner.family-notes.index');
+    Route::get('familyOwner/family-notes/create', [FamilyNoteController::class, 'create'])->name('familyOwner.family-notes.create');
+    Route::post('familyOwner/family-notes/store', [FamilyNoteController::class, 'store'])->name('familyOwner.family-notes.store');
+    Route::get('familyOwner/family-notes/{familyNote}', [FamilyNoteController::class, 'show'])->name('familyOwner.family-notes.show');
+    Route::get('familyOwner/family-notes/{familyNote}/edit', [FamilyNoteController::class, 'edit'])->name('familyOwner.family-notes.edit');
+    Route::put('familyOwner/family-notes/{familyNote}/update', [FamilyNoteController::class, 'update'])->name('familyOwner.family-notes.update');
+    Route::delete('familyOwner/family-notes/{familyNote}/delete', [FamilyNoteController::class, 'destroy'])->name('familyOwner.family-notes.destroy');
+
+    Route::get('familyOwner/subscriptions', [SubscriptionController::class, 'index'])->name('familyOwner.subscriptions.index');
+
+    Route::get('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
+    Route::post('/payment-methods/store', [PaymentMethodController::class, 'store'])->name('payment-methods.store');
+    Route::post('/payment-methods/{id}/set-primary', [PaymentMethodController::class, 'setPrimary'])->name('payment-methods.setPrimary');
+    Route::delete('/payment-methods/{id}/delete', [PaymentMethodController::class, 'destroy'])->name('payment-methods.destroy');
+
+    // Toggle recurring subscription
+    Route::post('/subscriptions/{id}/toggle-recurring', function ($id) {
+        $subscription = \App\Models\Subscription::findOrFail($id);
+        $subscription->is_recurring = ! $subscription->is_recurring;
+        $subscription->save();
+
+        return back()->with('success', 'Recurring setting updated.');
+    })->name('subscriptions.toggleRecurring');
 
 });

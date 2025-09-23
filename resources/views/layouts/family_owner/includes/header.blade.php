@@ -28,9 +28,9 @@
                         </ul>
                         <div class="user-dropdown">
                             <div class="user-avatar" id="userAvatar">
-                                <img src="assets/images/avator.png" alt="" />
+                                <img src="{{ asset('display_picture/'.auth()->user()->d_pic.'') }}" alt="" />
                                 <div class="txt">
-                                    <p class="p1"><span class="name">Debi Clark</span></p>
+                                    <p class="p1"><span class="name">{{ auth()->user()->name }}</span></p>
                                 </div>
                             </div>
                             <div class="dropdown-content" id="dropdownContent">

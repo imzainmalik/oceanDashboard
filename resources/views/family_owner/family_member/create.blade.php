@@ -2,6 +2,15 @@
 @section('content')
     <div class="page-box py-4">
         <div class="card">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="card-header">
                 Create Family members
             </div>
@@ -46,10 +55,10 @@
                         <div class="col-6">
                             <label>Roles</label>
                             <select class="form-control" name="role" id="role" required>
-                                <option value="2">Family Owner</option>
-                                <option value="3">Senior</option>
-                                <option value="4">Caregiver</option>
-                                <option value="5">Family Member</option>
+                                <option value="4">Family Owner</option>
+                                <option value="2">Senior</option>
+                                <option value="5">Caregiver</option>
+                                <option value="3">Family Member</option>
                             </select>
                         </div>
 
@@ -69,14 +78,22 @@
                                     <label>Blood Type</label>
                                     <select class="form-control" name="blood_type" id="blood_type" required>
                                         <option disabled selected>Select Blood Type</option>
-                                        <option value="A positive">A positive</option>
-                                        <option value="A negative">A negative</option>
-                                        <option value="B negative">B negative</option>
-                                        <option value="B positive">B positive</option>
-                                        <option value="O positive">O positive</option>
-                                        <option value="O negative">O negative</option>
-                                        <option value="AB negative">AB negative</option>
-                                        <option value="AB positive">AB positive</option>
+                                        <option value="A+">A
+                                            positive</option>
+                                        <option value="A-">A
+                                            negative</option>
+                                        <option value="B-">B
+                                            negative</option>
+                                        <option value="B+">B
+                                            positive</option>
+                                        <option value="O+">O
+                                            positive</option>
+                                        <option value="O-">O
+                                            negative</option>
+                                        <option value="AB-">AB
+                                            negative</option>
+                                        <option value="AB+">AB
+                                            positive</option>
                                     </select>
                                 </div>
                                 <div class="col-6 mb-2">
@@ -107,44 +124,93 @@
 
                     <hr>
 
-                    <h4>Setup Permissions</h4>
-                    <br>
-                    <table class="table table-bordered table-striped align-middle text-center py-4">
-                        <thead class="table-dark">
-                            <tr>
-                                <th class="text-start">Features & Permission</th>
-                                {{-- <th>Super Admin</th>
-                                <th>Family Owner</th>
-                                <th>Senior</th>
-                                <th>Caregiver</th>
-                                <th>Family Member</th> --}}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="text-start">View Bills</td>
-                                <td><input class="form-check-input" name="permissons[]" value="view_bills"
-                                        type="checkbox">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Upload Documents</td>
-                                <td><input class="form-check-input" type="checkbox" value="upload_docs"
-                                        name="permissons[]">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">Manage Caregivers</td>
-                                <td><input class="form-check-input" type="checkbox" value="manage_caregivers"
-                                        name="permissons[]"></td>
-                            </tr>
-                            <tr>
-                                <td class="text-start">View Reports</td>
-                                <td><input class="form-check-input" type="checkbox" value="view_reports"
-                                        name="permissons[]"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="container mt-4">
+                        <h3 class="mb-4">⚙️ Setup Permissions</h3>
+
+                        <div class="list-group">
+
+                            <!-- View Bills -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>View Bills</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" name="permissions[]" type="checkbox"
+                                        value="view_bills">
+                                    <label class="form-check-label" for="view_bills"></label>
+                                </div>
+                            </div>
+
+                            <!-- Upload Documents -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Upload Documents</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]"
+                                        id="upload_docs">
+                                    <label class="form-check-label" for="upload_docs"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Caregivers -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Caregivers</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_caregivers"
+                                        name="permissions[]" value="manage_caregivers">
+                                    <label class="form-check-label" for="manage_caregivers"></label>
+                                </div>
+                            </div>
+
+                            <!-- View Reports -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>View Reports</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox"
+                                        id="permViewReports"name="permissions[]" value="view_reports">
+                                    <label class="form-check-label" for="view_reports"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Tasks -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Tasks</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_tasks"
+                                        name="permissions[]" value="manage_tasks">
+                                    <label class="form-check-label" for="manage_tasks"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Family Members -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Family Members</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_family_members"
+                                        name="permissions[]" value="manage_family_members">
+                                    <label class="form-check-label" for="manage_family_members"></label>
+                                </div>
+                            </div>
+
+                            <!-- Manage Subscription -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Manage Subscription</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="manage_subscription"
+                                        name="permissions[]" value="manage_subscription">
+                                    <label class="form-check-label" for="manage_subscription"></label>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Documents -->
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Emergency Documents</span>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="emergency_doc"
+                                        name="permissions[]" value="emergency_doc">
+                                    <label class="form-check-label" for="emergency_doc"></label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
 
                     <br>
                     <button class="btn btn-primary" type="submit" id="registerForm">Submit</button>
@@ -160,7 +226,7 @@
             let seniorFields = document.getElementById('senior-fields');
             let inputs = seniorFields.querySelectorAll('input, select, textarea');
 
-            if (this.value === "3") { // Senior selected
+            if (this.value === "2") { // Senior selected
                 seniorFields.classList.remove('d-none');
                 inputs.forEach(input => input.setAttribute('required', true));
             } else {

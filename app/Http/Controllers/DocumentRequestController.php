@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentRequestController extends Controller
 {
-        /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -26,6 +26,7 @@ class DocumentRequestController extends Controller
     public function index()
     {
         $requests = DocumentRequest::where('family_owner_id', auth()->user()->id)
+            ->orwhere('target_user_id', auth()->user()->id)
             ->orderBy('id', 'DESC')->get();
 
         return view('documents.index', compact('requests'));
@@ -65,7 +66,7 @@ class DocumentRequestController extends Controller
             'message' => $request->message,
             'expires_at' => $expiresAt,
             'status' => 'pending',
-            'type' => $request->doc_type
+            'type' => $request->doc_type,
         ]);
 
         $target_user = User::find((int) $request->target_user_id);
@@ -121,7 +122,9 @@ class DocumentRequestController extends Controller
         $documentRequest->save();
 
         $target_user = User::find((int) $request->target_user_id);
-        make_log(auth()->user()->id, auth()->user()->name, 'Document Requested', ' '.auth()->user()->name.' Requested for Document to '.$target_user->name.'');
+        $requester_id = User::find((int) $target_user->requester_id);
+
+        make_log(auth()->user()->id, auth()->user()->name, 'Document Requested', ' '.auth()->user()->name.' Submitted Document to '.$requester_id->name.'');
 
         return redirect()->back()->with('success', 'Document submitted successfully.');
     }
@@ -144,7 +147,7 @@ class DocumentRequestController extends Controller
     public function cancel(DocumentRequest $documentRequest)
     {
         $user = Auth::user();
-        if ($user->id !== $documentRequest->requester_id && $user->role->name !== 'super_admin') {
+        if ($user->id !== $documentRequest->requester_id && $user->role->name !== 'familyOwner') {
             abort(403);
         }
 

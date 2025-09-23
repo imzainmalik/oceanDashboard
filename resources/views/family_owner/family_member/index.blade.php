@@ -7,6 +7,8 @@
             <div class="card-header">
                 All Members
             </div>
+                            <a href="{{ route('familyOwner.add_member') }}">Create Mmebers</a>
+
             <div class="card-body">
                 <div class="row" bis_skin_checked="1">
                     <div class="col-lg-12" bis_skin_checked="1">

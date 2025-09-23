@@ -3,6 +3,15 @@
 
 {{-- @dd($voting); --}}
 <div class="container">
+    @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     <h3>{{ isset($voting) ? 'Edit' : 'Create' }} Voting Pool</h3>
 
     <form action="{{ isset($voting) ? route('familyOwner.pools.update', $voting->id) : route('familyOwner.pools.store') }}" method="POST">

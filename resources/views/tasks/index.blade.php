@@ -5,19 +5,14 @@
         <div class="container-fluid p-0" bis_skin_checked="1">
             <div class="page-title" bis_skin_checked="1">
                 <div class="row align-items-center" bis_skin_checked="1">
-                    <div class="col-md-5" bis_skin_checked="1">
-                        <div class="content" bis_skin_checked="1">
-                            <h3>Caregiver Dashboard</h3>
-                        </div>
-                    </div>
+                    
                     <div class="col-md-7 text-md-end" bis_skin_checked="1">
                         <div class="addBtns" bis_skin_checked="1">
-                            <a href="javascript:;" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
-                                Information</a>
-                            <a href="{{ route('familyOwner.tasks.create') }}" class="btn btn-secondary"
-                                data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fab fa-plus"></i> Add
+                            {{-- <a href="javascript:;" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
+                                Information</a> --}}
+                            <a href="{{ route('familyOwner.tasks.create') }}" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
                                 Task</a>
-                            <a href="javascript:;" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
+                            <a href="{{ route('familyOwner.add_member') }}" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
                                 Member</a>
                         </div>
                     </div>

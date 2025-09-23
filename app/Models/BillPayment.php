@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class BillPayment extends Model
 {
     //
+    protected $fillable = ['bills_id','payer_id','amount_paid','payment_method','confirmation_number','receipt_path','status'];
 
     public function bill()
     {
