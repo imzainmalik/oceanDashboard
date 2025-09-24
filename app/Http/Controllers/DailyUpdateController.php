@@ -15,28 +15,30 @@ class DailyUpdateController extends Controller
 
         $tenant = Tenant::where('child_id', $seniorId)->first();
         // Care logs for this senior
-        $careLogs = TimelineLog::where('family_owner_id', $tenant->owner_id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // $careLogs = TimelineLog::where('family_owner_id', $tenant->owner_id)
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
 
         // Requests & responses for this senior
         $requests = Task::where('assignee_id', $seniorId)
+        ->orwhere('owner_id', $tenant->owner_id)
             ->orderBy('created_at', 'desc')
             ->get();
 
+            // dd($requests);   
         // Merge into a single collection (optional)
         $updates = collect();
 
-        foreach ($careLogs as $log) {
-            $updates->push([
-                'type' => 'care_log',
-                'title' => $log->name,
-                'description' => $log->action_desc ?? '',
-                'date' => $log->created_at,
-                'created_at' => $log->created_at,
-                'status' => 'completed',
-            ]);
-        }
+        // foreach ($careLogs as $log) {
+        //     $updates->push([
+        //         'type' => 'care_log',
+        //         'title' => $log->name,
+        //         'description' => $log->action_desc ?? '',
+        //         'date' => $log->created_at,
+        //         'created_at' => $log->created_at,
+        //         'status' => 'completed',
+        //     ]);
+        // }
 
         foreach ($requests as $task) {
             $updates->push([

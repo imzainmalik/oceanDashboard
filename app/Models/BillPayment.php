@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class BillPayment extends Model
 {
     //
-    protected $fillable = ['bills_id','payer_id','amount_paid','payment_method','confirmation_number','receipt_path','status'];
+    protected $fillable = ['bills_id','payer_id','amount_paid','payment_method','confirmation_number','receipt_path','status','type'];
 
     public function bill()
     {
-        return $this->belongsTo(Bills::class);
+        return $this->hasOne(Bills::class,'id','bills_id');
     }
 
     public function payer()

@@ -29,6 +29,7 @@ class DocumentRequestController extends Controller
             ->orwhere('target_user_id', auth()->user()->id)
             ->orderBy('id', 'DESC')->get();
 
+            // dd($requests);
         return view('documents.index', compact('requests'));
     }
 
@@ -62,7 +63,7 @@ class DocumentRequestController extends Controller
             'family_owner_id' => Auth::id(),
             'requester_id' => Auth::id(),
             'target_user_id' => (int) $request->target_user_id,
-            'title' => $request->title,
+            'title' => $request->title, 
             'message' => $request->message,
             'expires_at' => $expiresAt,
             'status' => 'pending',

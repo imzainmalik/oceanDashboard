@@ -14,7 +14,7 @@
         @endif
     <h3>{{ isset($voting) ? 'Edit' : 'Create' }} Voting Pool</h3>
 
-    <form action="{{ isset($voting) ? route('familyOwner.pools.update', $voting->id) : route('familyOwner.pools.store') }}" method="POST">
+    <form action="{{ isset($voting) ? route(''.auth()->user()->custom_role.'.pools.update', $voting->id) : route('familyOwner.pools.store') }}" method="POST">
         @csrf
         @if(isset($voting)) @method('PUT') @endif
 

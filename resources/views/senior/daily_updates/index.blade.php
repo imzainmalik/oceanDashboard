@@ -90,7 +90,7 @@
                         @php
                             $randomColor = $colors[array_rand($colors)];
                         @endphp {
-                            title: '{{ $update['description'] }}',
+                            title: '{{ $update['title'] }}',
                             start: '{{ $update['created_at']->format('Y-m-d') }}',
                             end: '{{ $update['created_at']->format('Y-m-d') }}',
                             allDay: true,

@@ -185,7 +185,6 @@ class FamilyMemberManageController extends Controller
 
         make_log(auth()->user()->id, auth()->user()->name, 'Created Family member', ' '.auth()->user()->name.' Created '.$request->full_name.' as Member ');
 
-
         return redirect()->route('familyOwner.all_members')->with('success', 'Memeber created');
     }
 
@@ -199,11 +198,11 @@ class FamilyMemberManageController extends Controller
     public function update_member(Request $request, $id)
     {
 
-                // dd($request->all());
+        // dd($request->all());
 
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$id,
+            'email' => 'required|email|unique:users,email,' . $id,
             'd_pic' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'cnfrm_password' => 'nullable|min:8|confirmed',
             'role' => 'required|integer|in:1,2,3,4', // adjust role IDs

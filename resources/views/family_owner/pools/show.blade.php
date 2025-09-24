@@ -36,7 +36,7 @@
         @if ($voting->isOpen())
             <div class="card mb-3">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('familyOwner.voting.vote', $voting->id) }}">
+                    <form method="POST" action="{{ route(''.auth()->user()->custom_role.'.voting.vote', $voting->id) }}">
                         @csrf
                         <div class="mb-2">
                             <label>Choice</label>
@@ -98,7 +98,7 @@
             </div>
             {{-- @dd($pool); --}}
             <div class="card-footer">
-                <form action="{{ route('familyOwner.voting.comment.store', $pool->id) }}" method="POST">
+                <form action="{{ route(''.auth()->user()->custom_role.'.voting.comment.store', $pool->id) }}" method="POST">
                     @csrf
                     <div class="input-group">
                         <input name="message" class="form-control" placeholder="Write a message..." required>

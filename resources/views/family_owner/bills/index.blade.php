@@ -7,8 +7,8 @@
         }
 
         /* div#download_monthly {
-                                    background-color: #0c0c0c9c;
-                                } */
+                                            background-color: #0c0c0c9c;
+                                        } */
     </style>
     <div class="container">
         <h5 class="mb-4">All Bill Requests</h5>
@@ -46,9 +46,10 @@
                                         {{ ucfirst($bill->status) }}
                                     </span>
                                 </td>
+                                {{-- @dd(auth()->user()->custom_role); --}}
                                 <td>
                                     @if ($bill->payments->count() > 0)
-                                        <a href="{{ route('' . auth()->user()->customRole() . '.bills.show', $bill->id) }}"
+                                        <a href="{{ route('' . auth()->user()->custom_role . '.bills.show', $bill->id) }}"
                                             class="btn btn-sm btn-info">
                                             View Receipt
                                         </a>

@@ -27,8 +27,14 @@ class BillController extends Controller
 
     public function index()
     {
-        $bills = Bills::with(['assignee', 'payments'])->where('owner_id', auth()->id())
+        $tenant = Tenant::where('child_id',auth()->user()->id)->first();
+        if($tenant == null){
+             $bills = Bills::with(['assignee', 'payments'])->where('owner_id', auth()->user()->id)
             ->orwhere('assigned_to', auth()->id())->latest()->get();
+        }else{
+            $bills = Bills::with(['assignee', 'payments'])->where('owner_id', $tenant->owner_id)->latest()->get();
+        }
+
 
         // dd($bills);
         return view('family_owner.bills.index', compact('bills'));

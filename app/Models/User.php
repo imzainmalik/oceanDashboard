@@ -35,7 +35,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function customRole()
+    public function getCustomRoleAttribute()
     {
          return $this->role ? lcfirst($this->role->name) : null;
     }

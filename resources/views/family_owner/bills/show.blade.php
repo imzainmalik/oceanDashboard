@@ -4,7 +4,7 @@
 <div class="container">
     <h3>💳 Payment History for Bill: {{ $bill->title }}</h3>
 
-    <a href="{{ route(''.auth()->user()->customRole().'.bills.index') }}" class="btn btn-secondary mb-3">⬅ Back to Bills</a>
+    <a href="{{ route(''.auth()->user()->custom_role.'.bills.index') }}" class="btn btn-secondary mb-3">⬅ Back to Bills</a>
 
     @if($payments->count() > 0)
         <table class="table table-bordered">
@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody>
-            @foreach($payments as $payment)
+            @foreach($payments as $payment)     
                 <tr>
                     <td>${{ number_format($payment->amount_paid, 2) }}</td>
                     <td>{{ ucfirst(str_replace('_',' ', $payment->payment_method)) }}</td>

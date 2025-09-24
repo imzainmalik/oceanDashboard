@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
@@ -23,10 +24,11 @@ class TaskController extends Controller
     
     public function index(Request $request)
     {
+        // dd(auth()->user()->id);
     $tasks = Task::with(['owner','assignee'])
         ->where('is_deleted', 0)
         ->where('owner_id', auth()->user()->id)
-        ->where('assignee_id', auth()->user()->id) 
+        ->orwhere('assignee_id', auth()->user()->id) 
         ->get();
         // dd($tasks);
         if ($request->ajax()) {
@@ -53,8 +55,9 @@ class TaskController extends Controller
 
     public function create()
     {
-        $users = User::all();  
+        $tenant = Tenant::where('owner_id', auth()->user()->id)->first();
 
+        $users= User::where('id',$tenant->child_id)->get();
         return view('tasks.create', compact('users'));
     }
 

@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\DailyUpdateController;
 use App\Http\Controllers\DocumentRequestController;
+use App\Http\Controllers\ContributionController;
+use App\Http\Controllers\FamilyMemberController;
 use App\Http\Controllers\FamilyMemberManageController;
 use App\Http\Controllers\FamilyNoteController;
 use App\Http\Controllers\FamilyOwnerController;
@@ -12,6 +14,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MeetingController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\ReimbursementController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SeniorController;
 use App\Http\Controllers\SubscriptionController;
@@ -21,6 +24,7 @@ use App\Http\Controllers\VoiceJournalController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\VotingCommentController;
 use App\Http\Controllers\VotingPoolController;
+use App\Http\Middleware\FamilyMemberMiddleware;
 use App\Http\Middleware\FamilyOwnerMiddleware;
 use App\Http\Middleware\SeniorMiddleware;
 use App\Http\Middleware\SuperAdminMiddleware;
@@ -42,7 +46,7 @@ Route::get('/check_role', [HomeController::class, 'check_role'])->name('check_ro
 // Route::get('/login', [LoginController::class, 'login'])->name('login');
 // });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-    
+
 Route::get('/familyOwner/tasks', [TaskController::class, 'index'])->name('familyOwner.tasks.index');     // DataTable page
 Route::get('/familyOwner/tasks/create', [TaskController::class, 'create'])->name('familyOwner.tasks.create');
 Route::post('/familyOwner/tasks', [TaskController::class, 'store'])->name('familyOwner.tasks.store');
@@ -63,6 +67,38 @@ Route::post('/document-requests/{documentRequest}/cancel', [DocumentRequestContr
 
 Route::middleware(SuperAdminMiddleware::class)->group(function () {
     Route::get('/admin/dashboard', [SuperAdminController::class, 'index'])->name('superadmin.index');
+});
+
+Route::middleware(FamilyMemberMiddleware::class)->group(function () {
+    Route::get('/familyMember/dashboard', [FamilyMemberController::class, 'index'])->name('familyMember.index');
+    Route::get('/familyMember/daily-updates', [DailyUpdateController::class, 'index'])->name('familyMember.daily-updates.index');
+    Route::get('familyMember/voting', [VotingPoolController::class, 'index'])->name('familyMember.pools.index');
+    Route::get('familyMember/voting/data', [VotingPoolController::class, 'data'])->name('familyMember.pools.data');
+    Route::get('familyMember/voting/{voting}', [VotingPoolController::class, 'show'])->name('familyMember.pools.show');
+    Route::put('familyMember/voting/{voting}', [VotingPoolController::class, 'update'])->name('familyMember.pools.update');
+    Route::post('familyMember/voting/{voting}/comment', [VotingCommentController::class, 'store'])->name('familyMember.voting.comment.store');
+    Route::post('familyMember/voting/{voting}/vote', [VoteController::class, 'store'])->name('familyMember.voting.vote');
+
+
+    Route::get('familyMember/contribution/index', [ContributionController::class, 'index'])->name('familyMember.contribution.index');
+    Route::get('familyMember/contribution/create', [ContributionController::class, 'create'])->name('familyMember.contribution.create');
+    Route::post('familyMember/contribution/create', [ContributionController::class, 'store'])->name('familyMember.contribution.store');
+    Route::get('familyMember/contribution/{contribution}', [ContributionController::class, 'show'])->name('familyMember.contribution.show');
+    Route::get('familyMember/contribution/{contribution}/edit', [ContributionController::class, 'edit'])->name('familyMember.contribution.edit');
+    Route::put('familyMember/contribution/{contribution}', [ContributionController::class, 'update'])->name('familyMember.contribution.update');
+    Route::delete('familyMember/contribution/{contribution}', [ContributionController::class, 'destroy'])->name('familyMember.contribution.destroy');
+
+    Route::get('familyMember/bills', [BillController::class, 'index'])->name('familyMember.bills.index');
+    Route::get('familyMember/bills/{bill}', [BillController::class, 'show'])->name('familyMember.bills.show');
+
+
+    Route::get('familyMember/reimbursment/index', [ReimbursementController::class, 'index'])->name('familyMember.reimbursment.index');
+    Route::get('familyMember/reimbursment/create', [ReimbursementController::class, 'create'])->name('familyMember.reimbursment.create');
+    Route::post('familyMember/reimbursment/store', [ReimbursementController::class, 'store'])->name('familyMember.reimbursment.store');
+    Route::get('familyMember/reimbursment/{reimbursement}', [ReimbursementController::class, 'show'])->name('familyMember.reimbursment.show');
+    Route::get('familyMember/reimbursment/{reimbursement}/edit', [ReimbursementController::class, 'edit'])->name('familyMember.reimbursment.edit');
+    Route::put('familyMember/reimbursment/{reimbursement}', [ReimbursementController::class, 'update'])->name('familyMember.reimbursment.update');
+    Route::delete('familyMember/reimbursment/{reimbursement}', [ReimbursementController::class, 'destroy'])->name('familyMember.reimbursment.destroy');
 });
 
 Route::middleware([SeniorMiddleware::class])->group(function () {
@@ -93,7 +129,6 @@ Route::middleware([SeniorMiddleware::class])->group(function () {
     Route::post('senior/bill-payments/{payment}/review', [BillController::class, 'reviewPayment'])->name('senior.bills.reviewPayment');
     Route::put('senior/bills/{bill}/approve', [BillController::class, 'approve'])->name('senior.bills.approve');
     Route::put('senior/bills/{bill}/decline', [BillController::class, 'decline'])->name('senior.bills.decline');
-
 });
 Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
     Route::get('/familyOwner/dashboard', [FamilyOwnerController::class, 'index'])->name('familyOwner.index');
@@ -158,5 +193,4 @@ Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
 
         return back()->with('success', 'Recurring setting updated.');
     })->name('subscriptions.toggleRecurring');
-
 });
