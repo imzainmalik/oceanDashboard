@@ -44,8 +44,8 @@ class FamilyMemberManageController extends Controller
                 ->addColumn('user', function ($tenant) {
                     return '
                     <div class="user">
-                        <img src="'.asset('display_picture/'.$tenant->users->d_pic).'" alt="">
-                        <p>'.$tenant->users->name.'</p>
+                        <img src="' . asset('display_picture/' . $tenant->users->d_pic) . '" alt="">
+                        <p>' . $tenant->users->name . '</p>
                     </div>
                 ';
                 })
@@ -62,21 +62,21 @@ class FamilyMemberManageController extends Controller
                     if ($total > 0) {
                         foreach ($permissions->take(3) as $permission) {
                             $randomColor = $colors[array_rand($colors)];
-                            $badges .= '<div class="badge me-1" style="background-color:'.$randomColor.';color:white;">'
-                                     .$permission->feature_name.'</div>';
+                            $badges .= '<div class="badge me-1" style="background-color:' . $randomColor . ';color:white;">'
+                                . $permission->feature_name . '</div>';
                         }
 
                         if ($total > 3) {
                             $badges .= '<button type="button" class="btn btn-link p-0 show-more-perms" 
-                        data-bs-toggle="collapse" data-bs-target="#morePerms'.$tenant->id.'">
+                        data-bs-toggle="collapse" data-bs-target="#morePerms' . $tenant->id . '">
                         Show More
                     </button>';
 
-                            $badges .= '<div class="collapse mt-2" id="morePerms'.$tenant->id.'">';
+                            $badges .= '<div class="collapse mt-2" id="morePerms' . $tenant->id . '">';
                             foreach ($permissions->slice(3) as $permission) {
                                 $randomColor = $colors[array_rand($colors)];
-                                $badges .= '<div class="badge me-1" style="background-color:'.$randomColor.';color:white;">'
-                                         .$permission->feature_name.'</div>';
+                                $badges .= '<div class="badge me-1" style="background-color:' . $randomColor . ';color:white;">'
+                                    . $permission->feature_name . '</div>';
                             }
                             $badges .= '</div>';
                         }
@@ -88,7 +88,7 @@ class FamilyMemberManageController extends Controller
                     $tasks = Task::where('assignee_id', $tenant->users->id)
                         ->where('status', 'completed')->get();
 
-                    return '<span class="badge-table badge-green">'.$tasks->count().'</span>';
+                    return '<span class="badge-table badge-green">' . $tasks->count() . '</span>';
                 })
                 ->addColumn('acc_status', function ($tenant) {
                     if ($tenant->users->account_status == 0) {
@@ -97,6 +97,21 @@ class FamilyMemberManageController extends Controller
                         return '<span class="badge-table badge-red">InActive</span>';
                     }
                 })
+
+                ->addColumn('acc_roll', function ($tenant) {
+                    $colors = colors();
+                    $randomColor = $colors[array_rand($colors)];
+                    if ($tenant->users->role_id == 2) {
+                        $role = '<span class="badge me-1"style="background-color:' . $randomColor . ';color:white;">Senior</span>';
+                    } elseif($tenant->users->role_id == 3) {
+                        $role = '<span class="badge me-1" style="background-color:' . $randomColor . ';color:white;">Family Member</span>';
+                    }elseif($tenant->users->role_id == 4) {
+                        $role = '<span class="badge me-1"style="background-color:' . $randomColor . ';color:white;">Family Leader</span>';
+                    }else {
+                        $role = '<span class="badge me-1"style="background-color:' . $randomColor . ';color:white;">Caregiver</span>';
+                    }
+                    return $role;
+                })
                 ->addColumn('action', function ($tenant) {
                     $actions = '
                     <div class="btn-group btnIconDetail">
@@ -104,20 +119,20 @@ class FamilyMemberManageController extends Controller
                             <i class="fas fa-ellipsis-h"></i>
                         </button>
                         <ul class="dropdown-menu">
-                            <li class="first"><a class="dropdown-item" href="'.route('familyOwner.edit_member', $tenant->users->id).'">Edit</a></li>
-                            <li class="last"><a class="dropdown-item" href="javascript:;" onclick="delete_member('.$tenant->users->id.')">Delete</a></li>';
+                            <li class="first"><a class="dropdown-item" href="' . route('familyOwner.edit_member', $tenant->users->id) . '">Edit</a></li>
+                            <li class="last"><a class="dropdown-item" href="javascript:;" onclick="delete_member(' . $tenant->users->id . ')">Delete</a></li>';
 
                     if ($tenant->users->account_status == 0) {
-                        $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="inactivate_member('.$tenant->users->id.')">Inactivate</a></li>';
+                        $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="inactivate_member(' . $tenant->users->id . ')">Inactivate</a></li>';
                     } else {
-                        $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="activate_member('.$tenant->users->id.')">Activate</a></li>';
+                        $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="activate_member(' . $tenant->users->id . ')">Activate</a></li>';
                     }
 
                     $actions .= '</ul></div>';
 
                     return $actions;
                 })
-                ->rawColumns(['user', 'permissions', 'status', 'action', 'acc_status']) // HTML allow
+                ->rawColumns(['user', 'permissions', 'status', 'action', 'acc_status','acc_roll']) // HTML allow
                 ->make(true);
         }
 
@@ -136,7 +151,7 @@ class FamilyMemberManageController extends Controller
 
         if ($request->hasFile('d_pic')) {
             $attechment = $request->file('d_pic');
-            $img_2 = time().$attechment->getClientOriginalName();
+            $img_2 = time() . $attechment->getClientOriginalName();
             $attechment->move(public_path('display_picture'), $img_2);
         } else {
             $img_2 = null;
@@ -171,7 +186,7 @@ class FamilyMemberManageController extends Controller
             $senior->has_dementia = $request->has_dementia ?? 0;
             $senior->has_alzheimer = $request->has_alzheimer ?? 0;
             $senior->save();
-            make_log(auth()->user()->id, auth()->user()->name, 'Created senior', ' '.auth()->user()->name.' Created '.$request->full_name.' as Senior ');
+            make_log(auth()->user()->id, auth()->user()->name, 'Created senior', ' ' . auth()->user()->name . ' Created ' . $request->full_name . ' as Senior ');
         }
 
         if ($request->permissions != null) {
@@ -183,7 +198,7 @@ class FamilyMemberManageController extends Controller
             }
         }
 
-        make_log(auth()->user()->id, auth()->user()->name, 'Created Family member', ' '.auth()->user()->name.' Created '.$request->full_name.' as Member ');
+        make_log(auth()->user()->id, auth()->user()->name, 'Created Family member', ' ' . auth()->user()->name . ' Created ' . $request->full_name . ' as Member ');
 
         return redirect()->route('familyOwner.all_members')->with('success', 'Memeber created');
     }
@@ -224,7 +239,7 @@ class FamilyMemberManageController extends Controller
 
         if ($request->hasFile('d_pic')) {
             $attechment = $request->file('d_pic');
-            $img_2 = time().$attechment->getClientOriginalName();
+            $img_2 = time() . $attechment->getClientOriginalName();
             $attechment->move(public_path('display_picture'), $img_2);
         } else {
             $img_2 = $update_user->d_pic;
@@ -279,7 +294,7 @@ class FamilyMemberManageController extends Controller
             $senior->update();
             // dd($request->all());
 
-            make_log(auth()->user()->id, auth()->user()->name, 'Updated senior', ' '.auth()->user()->name.' Updated '.$request->full_name.' as Senior ');
+            make_log(auth()->user()->id, auth()->user()->name, 'Updated senior', ' ' . auth()->user()->name . ' Updated ' . $request->full_name . ' as Senior ');
         }
 
         // 4. Update permissions (delete old → insert new)
@@ -306,7 +321,7 @@ class FamilyMemberManageController extends Controller
             'account_status' => 2,
         ]);
 
-        make_log(auth()->user()->id, auth()->user()->name, 'Account Deleted', ' '.auth()->user()->name.' Deleted account of'.$user->name.'');
+        make_log(auth()->user()->id, auth()->user()->name, 'Account Deleted', ' ' . auth()->user()->name . ' Deleted account of' . $user->name . '');
 
         return redirect()->route('familyOwner.all_members')->with('success', 'Member updated successfuly');
     }
@@ -325,7 +340,7 @@ class FamilyMemberManageController extends Controller
         } else {
             $status = 'InActive';
         }
-        make_log(auth()->user()->id, auth()->user()->name, 'Updated Account Status', ' '.auth()->user()->name.' Updated '.$user->name.' Account status as '.$status.' ');
+        make_log(auth()->user()->id, auth()->user()->name, 'Updated Account Status', ' ' . auth()->user()->name . ' Updated ' . $user->name . ' Account status as ' . $status . ' ');
 
         return redirect()->route('familyOwner.all_members')->with('success', 'Member updated successfuly');
     }

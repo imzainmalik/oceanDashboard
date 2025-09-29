@@ -144,7 +144,7 @@
                                 <span>Upload Documents</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" name="permissions[]"
-                                        id="upload_docs">
+                                        id="upload_docs" value="upload_docs">
                                     <label class="form-check-label" for="upload_docs"></label>
                                 </div>
                             </div>

@@ -4,6 +4,11 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
     <div class="container py-4">
+        <div class="card"> 
+            <div class="card-body">
+                
+            </div>
+        </div>
         <div class="card">
             <div class="card-header">
                 <div class="row">

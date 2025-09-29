@@ -37,7 +37,7 @@ class User extends Authenticatable
 
     public function getCustomRoleAttribute()
     {
-         return $this->role ? lcfirst($this->role->name) : null;
+        return $this->role ? lcfirst($this->role->name) : null;
     }
 
     /**
@@ -86,5 +86,9 @@ class User extends Authenticatable
     public function votingComments()
     {
         return $this->hasMany(VotingComment::class, 'user_id');
+    }
+    public function vacations()
+    {
+        return $this->belongsToMany(Vacation::class, 'vacation_user');
     }
 }

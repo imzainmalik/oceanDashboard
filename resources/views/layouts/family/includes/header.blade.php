@@ -30,7 +30,7 @@
                             <div class="user-avatar" id="userAvatar">
                                 <img src="assets/images/avator.png" alt="" />
                                 <div class="txt">
-                                    <p class="p1"><span class="name">Debi Clark</span></p>
+                                    <p class="p1"><span class="name">{{ auth()->user()->name }}</span></p>
                                 </div>
                             </div>
                             <div class="dropdown-content" id="dropdownContent">
@@ -183,7 +183,8 @@
                     </div>
                     <div class="form-group">
                         <label for="start-date">Start date <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" id="start-date" placeholder="start-date" required>
+                        <input type="date" class="form-control" id="start-date" placeholder="start-date"
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="end-date">End date - <small class="text-muted">Optional</small></label>

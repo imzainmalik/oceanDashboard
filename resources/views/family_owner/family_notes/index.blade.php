@@ -8,7 +8,7 @@
                         <h5>Family Notes & Feedback</h5>
                     </div>
                     <div class="col-9 d-flex justify-content-end">
-                            <a href="{{ route('familyOwner.family-notes.create') }}" class="btn btn-primary">Add New</a>
+                            <a href="{{ route(''.auth()->user()->custom_role.'.family-notes.create') }}" class="btn btn-primary">Add New</a>
                     </div>
                 </div>
             </div>
@@ -16,7 +16,7 @@
                 @if (session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
-
+                
                 <table class="table">
                     <thead>
                         <tr>
@@ -59,7 +59,7 @@
                     </tbody>
                 </table>
 
-                {{ $notes->links() }}
+                {{-- {{ $notes->links() }} --}}
             </div>
         </div>
     </div>

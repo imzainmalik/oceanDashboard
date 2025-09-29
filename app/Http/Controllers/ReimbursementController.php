@@ -21,7 +21,7 @@ class ReimbursementController extends Controller
 
     public function create()
     {
-        $tenant = Tenant::where('child_id',auth()->user()->id)->first();
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
         $bills = Bills::where('owner_id', $tenant->owner_id)->get();
         return view('family_member.reimbursements.create', compact('bills'));
     }
@@ -41,7 +41,10 @@ class ReimbursementController extends Controller
             'reason' => $request->reason,
             'status' => 'pending',
         ]);
-
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
+        
+        make_log($tenant->owner_id, auth()->user()->name, 'Added Reimbursement', ' ' . auth()->user()->name . ' Added Reimbursement Request for ' . $request->amount . ' ');
+        
         return redirect()->route('familyMember.reimbursment.index')
             ->with('success', 'Reimbursement request submitted successfully.');
     }
@@ -55,9 +58,9 @@ class ReimbursementController extends Controller
     public function edit(Reimbursement $reimbursement)
     {
         $this->authorizeOwner($reimbursement);
-        $tenant = Tenant::where('child_id',auth()->user()->id)->first();
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
         $bills = Bills::where('owner_id', $tenant->owner_id)->get();
-        
+
         return view('family_member.reimbursements.edit', compact('reimbursement', 'bills'));
     }
 

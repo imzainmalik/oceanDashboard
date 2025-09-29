@@ -4,7 +4,7 @@
 <div class="container">
     <h2>{{ isset($familyNote) ? 'Edit Note' : 'Add Note' }}</h2>
 
-    <form method="POST" action="{{ isset($familyNote) ? route('familyOwner.family-notes.update', $familyNote) : route('familyOwner.family-notes.store') }}">
+    <form method="POST" action="{{ isset($familyNote) ? route(''.auth()->user()->custom_role.'.family-notes.update', $familyNote) : route(''.auth()->user()->custom_role.'.family-notes.store') }}">
         @csrf
         @if(isset($familyNote))
             @method('PUT')
@@ -37,7 +37,7 @@
         </div>
 
         <button type="submit" class="btn btn-success">{{ isset($familyNote) ? 'Update' : 'Save' }}</button>
-        <a href="{{ route('familyOwner.family-notes.index') }}" class="btn btn-secondary">Cancel</a>
+        <a href="{{ route(''.auth()->user()->custom_role.'.family-notes.index') }}" class="btn btn-secondary">Cancel</a>
     </form>
 </div>
 @endsection

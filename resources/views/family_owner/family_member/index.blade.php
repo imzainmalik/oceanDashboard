@@ -21,6 +21,7 @@
                                         <th> Permissions </th>
                                         <th> Completed Task </th>
                                         <th> Account status </th>
+                                        <th> User roll </th>
                                         <th> Action</th>
                                         {{-- <th> </th> --}}
                                     </tr>
@@ -66,6 +67,12 @@
                     {
                         data: 'acc_status',
                         name: 'acc_status',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'acc_roll',
+                        name: 'acc_roll',
                         orderable: false,
                         searchable: false
                     },

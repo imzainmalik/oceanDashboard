@@ -55,9 +55,9 @@ class TaskController extends Controller
 
     public function create()
     {
-        $tenant = Tenant::where('owner_id', auth()->user()->id)->first();
-
-        $users= User::where('id',$tenant->child_id)->get();
+        $tenant = Tenant::where('owner_id', auth()->user()->id)->pluck('child_id')->toArray();
+        $users= User::whereIn('id',$tenant)->get();
+        // dd($users);
         return view('tasks.create', compact('users'));
     }
 
@@ -75,13 +75,11 @@ class TaskController extends Controller
             'assignee_id' => $request->assignee_id,
             'title' => $request->title,
             'type' => $request->type,
-            'details' => $request->details,
+            'details' => $request->description,
             'status' => 'pending',
         ]);
 
         $assignee_details = User::find($request->assignee_id);
-
-        make_log(auth()->user()->id, auth()->user()->name, "Task created", " " . auth()->user()->name . " Created Task for" . $assignee_details->name . " ");
 
         return redirect()->route('familyOwner.tasks.index')->with('success', 'Task created successfully!');
     }
@@ -95,19 +93,21 @@ class TaskController extends Controller
 
     public function edit(Task $task)
     {
-        $users = User::all();
+        $tenants = Tenant::where('owner_id', auth()->user()->id)->get();
+        // $users = User::where('');
 
-        return view('tasks.edit', compact('task', 'users'));
+        return view('tasks.edit', compact('task', 'tenants'));
     }
 
     public function update(Request $request, Task $task)
     {
-        // $request->validate([
-        //     'title' => 'required|string|max:255',
-        //     'type' => 'required|in:medical,non-medical',
-        //     'details' => 'nullable|string',
-        //     'status' => 'required|in:pending,in_progress,completed',
-        // ]);
+        // dd($request->all());
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'type' => 'required|in:medical,non-medical',
+            'details' => 'nullable|string',
+            // 'status' => 'required|in:pending,in_progress,completed',
+        ]);
 
         $task->update($request->only(['title', 'type', 'assignee_id', 'details', 'status']));
         $assignee_details = User::find($request->assignee_id);

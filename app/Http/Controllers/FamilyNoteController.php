@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\FamilyNote;
 use App\Models\FamilyOwner;
+use App\Models\Tenant;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,8 +13,13 @@ class FamilyNoteController extends Controller
 {
     public function index()
     {
-        $ownerId = FamilyOwner::where('owner_id', Auth::id())->value('id');
-        $notes = FamilyNote::where('family_owner_id', $ownerId)->latest()->paginate(10);
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
+        if ($tenant != null) {
+            $ownerId = User::where('id', $tenant->owner_id)->value('id');
+        } else {
+            $ownerId = auth()->user()->id;
+        }
+        $notes = FamilyNote::where('family_owner_id', $ownerId)->where('visibility', '!=', 'private')->latest()->get();
         return view('family_owner.family_notes.index', compact('notes'));
     }
 
@@ -30,7 +37,13 @@ class FamilyNoteController extends Controller
             'visibility' => 'required|in:private,family',
         ]);
 
-        $ownerId = FamilyOwner::where('owner_id', Auth::id())->value('id');
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
+
+        if ($tenant != null) {
+            $ownerId = $tenant->owner_id;
+        } else {
+            $ownerId = auth()->user()->id;
+        }
 
         FamilyNote::create([
             'family_member_id' => auth()->user()->id,
@@ -41,7 +54,7 @@ class FamilyNoteController extends Controller
             'visibility' => $request->visibility,
         ]);
 
-        return redirect()->route('familyOwner.family-notes.index')->with('success', 'Note created successfully.');
+        return redirect()->route('' . auth()->user()->custom_role . '.family-notes.index')->with('success', 'Note created successfully.');
     }
 
     public function show(FamilyNote $familyNote)
@@ -65,12 +78,12 @@ class FamilyNoteController extends Controller
 
         $familyNote->update($request->all());
 
-        return redirect()->route('familyOwner.family-notes.index')->with('success', 'Note updated successfully.');
+        return redirect()->route('' . auth()->user()->custom_role . '.family-notes.index')->with('success', 'Note updated successfully.');
     }
 
     public function destroy(FamilyNote $familyNote)
     {
         $familyNote->delete();
-        return redirect()->route('familyOwner.family-notes.index')->with('success', 'Note deleted successfully.');
+        return redirect()->route('' . auth()->user()->custom_role . '.family-notes.index')->with('success', 'Note deleted successfully.');
     }
 }

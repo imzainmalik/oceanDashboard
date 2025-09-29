@@ -29,19 +29,28 @@ class DocumentRequestController extends Controller
             ->orwhere('target_user_id', auth()->user()->id)
             ->orderBy('id', 'DESC')->get();
 
-            // dd($requests);
+        // dd($requests);
         return view('documents.index', compact('requests'));
     }
 
     public function create(Request $request)
     {
+
         $users = Tenant::where('owner_id', auth()->user()->id)
             ->whereHas('users', function ($q) {
                 $q->where('account_status', 0);
-                $q->orwhere('account_status', 1);
             })
             ->orderBy('id', 'DESC')
             ->get();
+
+            dd($users);
+        // $users = Tenant::where('owner_id', auth()->user()->id)
+        //     ->whereHas('users', function ($q) {
+        //         $q->where('account_status', 0);
+        //         $q->orwhere('account_status', 1);
+        //     })
+        //     ->orderBy('id', 'DESC')
+        //     ->get();
 
         // dd($users->owner);
         return view('documents.create', compact('users'));
@@ -63,7 +72,7 @@ class DocumentRequestController extends Controller
             'family_owner_id' => Auth::id(),
             'requester_id' => Auth::id(),
             'target_user_id' => (int) $request->target_user_id,
-            'title' => $request->title, 
+            'title' => $request->title,
             'message' => $request->message,
             'expires_at' => $expiresAt,
             'status' => 'pending',
@@ -71,7 +80,7 @@ class DocumentRequestController extends Controller
         ]);
 
         $target_user = User::find((int) $request->target_user_id);
-        make_log(auth()->user()->id, auth()->user()->name, 'Document Requested', ' '.auth()->user()->name.' Requested for Document to '.$target_user->name.'');
+        make_log(auth()->user()->id, auth()->user()->name, 'Document Requested', ' ' . auth()->user()->name . ' Requested for Document to ' . $target_user->name . '');
 
         // dd($docReq);
         return redirect()->route('document.requests.all')->with('success', 'Document request sent.');
@@ -125,7 +134,7 @@ class DocumentRequestController extends Controller
         $target_user = User::find((int) $request->target_user_id);
         $requester_id = User::find((int) $target_user->requester_id);
 
-        make_log(auth()->user()->id, auth()->user()->name, 'Document Requested', ' '.auth()->user()->name.' Submitted Document to '.$requester_id->name.'');
+        make_log(auth()->user()->id, auth()->user()->name, 'Document Requested', ' ' . auth()->user()->name . ' Submitted Document to ' . $requester_id->name . '');
 
         return redirect()->back()->with('success', 'Document submitted successfully.');
     }
@@ -156,6 +165,5 @@ class DocumentRequestController extends Controller
         $documentRequest->save();
 
         return redirect()->back()->with('success', 'Request cancelled.');
-
     }
 }

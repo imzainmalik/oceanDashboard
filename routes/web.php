@@ -3,9 +3,9 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\DailyUpdateController;
 use App\Http\Controllers\DocumentRequestController;
-use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\FamilyMemberController;
 use App\Http\Controllers\FamilyMemberManageController;
 use App\Http\Controllers\FamilyNoteController;
@@ -20,6 +20,7 @@ use App\Http\Controllers\SeniorController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\VacationController;
 use App\Http\Controllers\VoiceJournalController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\VotingCommentController;
@@ -79,7 +80,6 @@ Route::middleware(FamilyMemberMiddleware::class)->group(function () {
     Route::post('familyMember/voting/{voting}/comment', [VotingCommentController::class, 'store'])->name('familyMember.voting.comment.store');
     Route::post('familyMember/voting/{voting}/vote', [VoteController::class, 'store'])->name('familyMember.voting.vote');
 
-
     Route::get('familyMember/contribution/index', [ContributionController::class, 'index'])->name('familyMember.contribution.index');
     Route::get('familyMember/contribution/create', [ContributionController::class, 'create'])->name('familyMember.contribution.create');
     Route::post('familyMember/contribution/create', [ContributionController::class, 'store'])->name('familyMember.contribution.store');
@@ -90,8 +90,6 @@ Route::middleware(FamilyMemberMiddleware::class)->group(function () {
 
     Route::get('familyMember/bills', [BillController::class, 'index'])->name('familyMember.bills.index');
     Route::get('familyMember/bills/{bill}', [BillController::class, 'show'])->name('familyMember.bills.show');
-
-
     Route::get('familyMember/reimbursment/index', [ReimbursementController::class, 'index'])->name('familyMember.reimbursment.index');
     Route::get('familyMember/reimbursment/create', [ReimbursementController::class, 'create'])->name('familyMember.reimbursment.create');
     Route::post('familyMember/reimbursment/store', [ReimbursementController::class, 'store'])->name('familyMember.reimbursment.store');
@@ -99,6 +97,18 @@ Route::middleware(FamilyMemberMiddleware::class)->group(function () {
     Route::get('familyMember/reimbursment/{reimbursement}/edit', [ReimbursementController::class, 'edit'])->name('familyMember.reimbursment.edit');
     Route::put('familyMember/reimbursment/{reimbursement}', [ReimbursementController::class, 'update'])->name('familyMember.reimbursment.update');
     Route::delete('familyMember/reimbursment/{reimbursement}', [ReimbursementController::class, 'destroy'])->name('familyMember.reimbursment.destroy');
+
+    Route::get('familyMember/events/index', [VacationController::class, 'index'])->name('familyMember.events.index');
+    Route::get('familyMember/events/{vacation}', [VacationController::class, 'show'])->name('familyMember.events.show');
+
+
+    Route::get('familyMember/family-notes', [FamilyNoteController::class, 'index'])->name('familyMember.family-notes.index');
+    Route::get('familyMember/family-notes/create', [FamilyNoteController::class, 'create'])->name('familyMember.family-notes.create');
+    Route::post('familyMember/family-notes/store', [FamilyNoteController::class, 'store'])->name('familyMember.family-notes.store');
+    Route::get('familyMember/family-notes/{familyNote}', [FamilyNoteController::class, 'show'])->name('familyMember.family-notes.show');
+    Route::get('familyMember/family-notes/{familyNote}/edit', [FamilyNoteController::class, 'edit'])->name('familyMember.family-notes.edit');
+    Route::put('familyMember/family-notes/{familyNote}/update', [FamilyNoteController::class, 'update'])->name('familyMember.family-notes.update');
+    Route::delete('familyMember/family-notes/{familyNote}/delete', [FamilyNoteController::class, 'destroy'])->name('familyMember.family-notes.destroy');
 });
 
 Route::middleware([SeniorMiddleware::class])->group(function () {
@@ -116,7 +126,6 @@ Route::middleware([SeniorMiddleware::class])->group(function () {
     Route::get('senior/meetings/{meeting}/edit', [MeetingController::class, 'edit'])->name('senior.meetings.edit');
     Route::put('senior/meetings/{meeting}', [MeetingController::class, 'update'])->name('senior.meetings.update');
     Route::delete('/meetings/{meeting}', [MeetingController::class, 'destroy'])->name('senior.meetings.destroy');
-
 
     Route::get('senior/bills', [BillController::class, 'index'])->name('senior.bills.index');
     Route::get('senior/bills/create', [BillController::class, 'create'])->name('senior.bills.create');
@@ -141,9 +150,7 @@ Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
     Route::get('/familyOwner/activate-member/{id}', [FamilyMemberManageController::class, 'active_member'])->name('familyOwner.active_member');
 
     Route::get('/familyOwner/action-logs', [LogController::class, 'logs'])->name('familyOwner.logs');
-
     Route::get('/familyOwner/index', [ReportController::class, 'index'])->name('familyOwner.report.index');
-
     Route::get('/familyOwner/download_report', [ReportController::class, 'monthly_report'])->name('familyOwner.download_report');
 
     Route::get('familyOwner/voting', [VotingPoolController::class, 'index'])->name('familyOwner.pools.index');
