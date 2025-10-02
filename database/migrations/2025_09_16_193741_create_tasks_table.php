@@ -18,9 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->enum('type', ['medical', 'non-medical']);
             $table->text('details')->nullable();
-            $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
-            $table->timestamps();
-
+            $table->enum('status', ['pending', 'in_progress', 'completed', 'need_outside_help'])->default('pending');
+            $table->timestamps(); 
             // $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
             // $table->foreign('assignee_id')->references('id')->on('users')->onDelete('cascade');
         });

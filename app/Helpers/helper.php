@@ -17,6 +17,21 @@ if (!function_exists('make_log')) {
 }
 
 
+if (!function_exists('check_pemission')) {
+    function check_pemission($feature_name, $user_role_id)
+    { 
+        $permission = auth()->user()->hasPermission($feature_name); 
+        // $roleMatch = auth()->user()->role_id == $user_role_id;
+        // dd($permission || $user_role_id != 4);
+
+        if(!$permission){
+            if($user_role_id != 4){
+                abort(403);
+            }
+        }
+    }
+}
+
 if (!function_exists('colors')) {
     function colors()
     { 

@@ -27,6 +27,7 @@ class BillController extends Controller
 
     public function index()
     {
+
         $tenant = Tenant::where('child_id',auth()->user()->id)->first();
         if($tenant == null){
              $bills = Bills::with(['assignee', 'payments'])->where('owner_id', auth()->user()->id)
@@ -45,7 +46,9 @@ class BillController extends Controller
      */
     public function create()
     {
+        // if (!auth()->user()->hasPermission('bills_insert') || auth()->user()->check_if_owner == 4) abort(403);
         // family members who can be assigned to pay
+        check_pemission('bills_insert', auth()->user()->role_id);
         $members = Tenant::where('owner_id', auth()->user()->id)
             ->get();
 
@@ -64,7 +67,9 @@ class BillController extends Controller
         //     'details' => 'nullable|string',
         //     'type' => 'required|in:medical,non-medical',
         // ]);
+                check_pemission('bills_update', auth()->user()->role_id);
 
+        if (!auth()->user()->hasPermission('bills_update') || auth()->user()->check_if_owner == 4) abort(403);
         Bills::create([
             'owner_id' => auth()->id(),
             'assigned_to' => $request->assigned_to,
@@ -83,6 +88,8 @@ class BillController extends Controller
     public function submitPayment(Request $request, Bills $bill)
     {
         // check permission
+        // if (!auth()->user()->hasPermission('bill_payments_insert') || auth()->user()->check_if_owner == 4) abort(403);
+                check_pemission('bill_payments_insert', auth()->user()->role_id);
 
         if (! Auth::user()->permissions->contains('feature_name', 'view_bills')) {
             abort(403, 'Not allowed to submit payments');
@@ -149,6 +156,9 @@ class BillController extends Controller
      */
     public function show($id)
     {
+        // if (!auth()->user()->hasPermission('bill_payments_show') || auth()->user()->check_if_owner == 4) abort(403);
+                check_pemission('bill_payments_show', auth()->user()->role_id);
+
         // dd($id);
         $bill = Bills::with(['assignee', 'owner', 'payments.payer'])->findOrFail($id);
 
@@ -167,10 +177,12 @@ class BillController extends Controller
      */
     public function edit($id)
     {
+        // if (!auth()->user()->hasPermission('bills_update') || auth()->user()->check_if_owner == 4 != null) abort(403);
+   
         $bill = Bills::findOrFail($id);
-        if (auth()->id() !== $bill->owner_id) {
-            abort(403);
-        }
+        // if (auth()->id() !== $bill->owner_id) {
+        //     abort(403);
+        // }
 
         $members = \App\Models\User::where('account_status', 1)->get();
 
@@ -182,6 +194,8 @@ class BillController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // if (!auth()->user()->hasPermission('bills_update') || auth()->user()->check_if_owner == 4) abort(403);
+                check_pemission('bills_update', auth()->user()->role_id);
         $bill = Bills::findOrFail($id);
 
         if (auth()->id() !== $bill->owner_id) {
@@ -206,11 +220,14 @@ class BillController extends Controller
      */
     public function destroy($id)
     {
+        // if (!auth()->user()->hasPermission('bills_delete') || auth()->user()->check_if_owner == 4) abort(403);
+                        check_pemission('bills_delete', auth()->user()->role_id);
+
         $bill = Bills::findOrFail($id);
 
-        if (auth()->id() !== $bill->owner_id) {
-            abort(403);
-        }
+        // if (auth()->id() !== $bill->owner_id) {
+        //     abort(403);
+        // }
 
         $bill->delete();
 

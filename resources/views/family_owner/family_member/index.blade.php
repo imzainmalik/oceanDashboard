@@ -7,7 +7,7 @@
             <div class="card-header">
                 All Members
             </div>
-                            <a href="{{ route('familyOwner.add_member') }}">Create Mmebers</a>
+            <a href="{{ route(''.auth()->user()->custom_role.'.add_member') }}">Create Mmebers</a>
 
             <div class="card-body">
                 <div class="row" bis_skin_checked="1">
@@ -37,13 +37,13 @@
 @endsection
 @push('js')
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
+    {{-- @dd(); --}}
     <script>
         $(function() {
             $('#members-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('familyOwner.all_members') }}", // route pointing to controller
+                ajax: "{{ route(auth()->user()->custom_role . '.all_members') }}",
                 columns: [{
                         data: 'user',
                         name: 'user'
@@ -122,7 +122,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Redirect to delete route
-                    window.location.href = "/familyOwner/delete-member/" + id +"?status=1";
+                    window.location.href = "/familyOwner/delete-member/" + id + "?status=1";
                     // OR with Laravel named route:
                     // window.location.href = "{{ url('users/delete') }}/" + userId;
                 }
@@ -143,7 +143,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Redirect to delete route
-                    window.location.href = "/familyOwner/activate-member/" + id+"?status=0";
+                    window.location.href = "/familyOwner/activate-member/" + id + "?status=0";
                     // OR with Laravel named route:
                     // window.location.href = "{{ url('users/delete') }}/" + userId;
                 }

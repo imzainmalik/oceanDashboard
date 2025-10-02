@@ -1,27 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
+    {{-- @dd(auth()->user()->role); --}}
     <div class="content-card" bis_skin_checked="1">
         <div class="container-fluid p-0" bis_skin_checked="1">
             <div class="page-title" bis_skin_checked="1">
                 <div class="row align-items-center" bis_skin_checked="1">
-                    
-                    <div class="col-md-7 text-md-end" bis_skin_checked="1">
-                        <div class="addBtns" bis_skin_checked="1">
-                            {{-- <a href="javascript:;" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
+                    @if (auth()->user()->role->id == 4)
+                        <div class="col-md-7 text-md-end" bis_skin_checked="1">
+                            <div class="addBtns" bis_skin_checked="1">
+                                {{-- <a href="javascript:;" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
                                 Information</a> --}}
-                            <a href="{{ route('familyOwner.tasks.create') }}" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
-                                Task</a>
-                            <a href="{{ route('familyOwner.add_member') }}" class="btn btn-secondary"><i class="fab fa-plus"></i> Add
-                                Member</a>
+                                <a href="{{ route('familyOwner.tasks.create') }}" class="btn btn-secondary"><i
+                                        class="fab fa-plus"></i> Add
+                                    Task</a>
+                                <a href="{{ route('familyOwner.add_member') }}" class="btn btn-secondary"><i
+                                        class="fab fa-plus"></i> Add
+                                    Member</a>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
 
             <div class="row" bis_skin_checked="1">
                 <div class="col-md-8" bis_skin_checked="1">
-                    <div class="primary-card request-card" bis_skin_checked="1"> 
+                    <div class="primary-card request-card" bis_skin_checked="1">
                         <div class="row" bis_skin_checked="1">
                             <div class="col-lg-12" bis_skin_checked="1">
                                 <div class="orderTable table-responsive" bis_skin_checked="1">
@@ -33,6 +37,7 @@
                                                 <th>Owner</th>
                                                 <th>Assignee</th>
                                                 <th>Status</th>
+                                                <th>Time left for Broadcast</th>
                                                 <th width="150">Actions</th>
                                             </tr>
                                         </thead>
@@ -51,7 +56,7 @@
                             <div class="row" bis_skin_checked="1">
                                 <div class="col-md-11" bis_skin_checked="1">
                                     <h5>Messages</h5>
-                                </div> 
+                                </div>
                             </div>
                         </div>
 
@@ -63,7 +68,7 @@
                                 <span class="badgeNumber">2</span>
                             </div>
 
-                          
+
 
                             <div class="messages" bis_skin_checked="1">
                                 <img src="assets/images/av8.png" alt="">
@@ -91,7 +96,7 @@
 
     <script>
         $(function() {
-            $('#tasks-table').DataTable({
+            let table = $('#tasks-table').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('familyOwner.tasks.index') }}",
@@ -118,6 +123,17 @@
                         searchable: false
                     },
                     {
+                        data: 'created_at',
+                        name: 'created_at',
+                        render: function(data, type, row) {
+                            // Deadline = created_at + 2 days
+                            let deadline = new Date(data);
+                            deadline.setDate(deadline.getDate() + 2);
+
+                            return `<span class="countdown" data-deadline="${deadline.toISOString()}"></span>`;
+                        }
+                    },
+                    {
                         data: 'actions',
                         name: 'actions',
                         orderable: false,
@@ -125,6 +141,28 @@
                     }
                 ]
             });
+
+            // Live update countdown every second
+            setInterval(function() {
+                $('#tasks-table .countdown').each(function() {
+                    let deadline = new Date($(this).data('deadline'));
+                    let now = new Date();
+                    let diff = deadline - now;
+
+                    if (diff <= 0) {
+                        $(this).text("Expired / Need Help").css("color", "red");
+                    } else {
+                        let hours = Math.floor(diff / (1000 * 60 * 60));
+                        let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                        // Color coding
+                        let color = hours > 24 ? "green" : (hours > 1 ? "orange" : "red");
+                        $(this).text(hours + "h " + minutes + "m " + seconds + "s").css("color",
+                            color);
+                    }
+                });
+            }, 1000);
         });
     </script>
 @endpush

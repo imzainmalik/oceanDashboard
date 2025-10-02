@@ -25,6 +25,7 @@ class DocumentRequestController extends Controller
 
     public function index()
     {
+        // dd('s');
         $requests = DocumentRequest::where('family_owner_id', auth()->user()->id)
             ->orwhere('target_user_id', auth()->user()->id)
             ->orderBy('id', 'DESC')->get();
@@ -35,15 +36,24 @@ class DocumentRequestController extends Controller
 
     public function create(Request $request)
     {
-
-        $users = Tenant::where('owner_id', auth()->user()->id)
-            ->whereHas('users', function ($q) {
-                $q->where('account_status', 0);
-            })
-            ->orderBy('id', 'DESC')
-            ->get();
-
-            dd($users);
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
+        // dd($tenant, auth()->user()->id);
+        if ($tenant != null) {
+            $users = Tenant::where('owner_id', $tenant->owner_id)
+                ->whereHas('users', function ($q) {
+                    $q->where('account_status', 0);
+                })
+                ->orderBy('id', 'DESC')
+                ->get();
+        } else {
+            $users = Tenant::where('owner_id', auth()->user()->id)
+                ->whereHas('users', function ($q) {
+                    $q->where('account_status', 0);
+                })
+                ->orderBy('id', 'DESC')
+                ->get();
+        }
+        // dd($users);
         // $users = Tenant::where('owner_id', auth()->user()->id)
         //     ->whereHas('users', function ($q) {
         //         $q->where('account_status', 0);
@@ -65,6 +75,16 @@ class DocumentRequestController extends Controller
             'message' => 'nullable|string|max:2000',
             'deadline_minutes' => 'required|integer|min:5|max:10080',
         ]);
+        if($request->doc_type == "1"){
+            check_pemission('medical_docs_insert', auth()->user()->role_id);
+            // if (!auth()->user()->hasPermission('medical_docs_insert') || auth()->user()->check_if_owner == 4) abort(403);
+        }else if($request->doc_type == "2"){
+            // if (!auth()->user()->hasPermission('insurance_docs_insert') || auth()->user()->check_if_owner == 4) abort(403);
+            check_pemission('insurance_docs_insert', auth()->user()->role_id);
+        }else{
+            check_pemission('documents_insert', auth()->user()->role_id);
+            // if (!auth()->user()->hasPermission('documents_insert') || auth()->user()->check_if_owner == 4) abort(403);
+        }
 
         $expiresAt = Carbon::now()->addMinutes((int) $request->deadline_minutes);
 
@@ -88,11 +108,11 @@ class DocumentRequestController extends Controller
 
     public function show(DocumentRequest $documentRequest)
     {
+        // if (!auth()->user()->hasPermission('documents_show') || auth()->user()->check_if_owner == 4) abort(403);
+            check_pemission('documents_show', auth()->user()->role_id);
         $user = Auth::user();
-        if (! in_array($user->id, [$documentRequest->requester_id, $documentRequest->target_user_id]) && $user->role->name !== 'super_admin') {
-            abort(403);
-        }
 
+        
         if ($documentRequest->status === 'pending' && $documentRequest->isExpired()) {
             $documentRequest->status = 'expired';
             $documentRequest->save();
@@ -150,7 +170,7 @@ class DocumentRequestController extends Controller
         if (! in_array($user->id, [$documentRequest->requester_id, $documentRequest->target_user_id]) && $user->role->name !== 'super_admin') {
             abort(403);
         }
-
+ 
         return Storage::download($doc->disk_path, $doc->original_name);
     }
 

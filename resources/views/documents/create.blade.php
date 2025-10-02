@@ -28,6 +28,7 @@
                         <option value="" selected disabled>-- Select Document Type --</option>
                          <option value="0">Regular Document</option>
                          <option value="1">Medical Document</option>
+                          <option value="2">Insurance Document</option>
                     </select>
                 </div>
                 <div class="mb-3">

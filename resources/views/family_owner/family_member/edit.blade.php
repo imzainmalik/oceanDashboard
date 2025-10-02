@@ -35,7 +35,7 @@
                         <div class="col-6">
                             <label> Password</label>
                             <input type="password" class="form-control" name="password" id="password" />
-                        </div>
+                        </div> 
                         <div class="col-6">
                             <label>Confirm Password</label>
                             <input type="password" class="form-control" name="cnfrm_password" id="confirm_password" />
@@ -142,17 +142,17 @@
                     <hr>
                     {{-- @dd($user->permissions); --}} 
                     <br>
-                    <div class="container mt-4">
+                      <div class="container mt-4">
                         <h3 class="mb-4">⚙️ Setup Permissions</h3>
 
-                        <div class="list-group">
+                        {{-- <div class="list-group">
 
                             <!-- View Bills -->
                             <div class="list-group-item d-flex justify-content-between align-items-center">
                                 <span>View Bills</span>
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" name="permissions[]" type="checkbox" value="view_bills"
-                                        id="view_bills" @if ($user->permissions->contains('feature_name', 'view_bills')) checked @endif>
+                                    <input class="form-check-input" name="permissions[]" type="checkbox"
+                                        value="view_bills">
                                     <label class="form-check-label" for="view_bills"></label>
                                 </div>
                             </div>
@@ -162,8 +162,7 @@
                                 <span>Upload Documents</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" name="permissions[]"
-                                        value="upload_docs" @if ($user->permissions->contains('feature_name', 'upload_docs')) checked @endif
-                                        id="upload_docs">
+                                        id="upload_docs" value="upload_docs">
                                     <label class="form-check-label" for="upload_docs"></label>
                                 </div>
                             </div>
@@ -173,8 +172,7 @@
                                 <span>Manage Caregivers</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="manage_caregivers"
-                                        name="permissions[]" value="manage_caregivers"
-                                        @if ($user->permissions->contains('feature_name', 'manage_caregivers')) checked @endif>
+                                        name="permissions[]" value="manage_caregivers">
                                     <label class="form-check-label" for="manage_caregivers"></label>
                                 </div>
                             </div>
@@ -184,8 +182,7 @@
                                 <span>View Reports</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox"
-                                        id="permViewReports"name="permissions[]" value="view_reports"
-                                        @if ($user->permissions->contains('feature_name', 'view_reports')) checked @endif>
+                                        id="permViewReports"name="permissions[]" value="view_reports">
                                     <label class="form-check-label" for="view_reports"></label>
                                 </div>
                             </div>
@@ -195,8 +192,7 @@
                                 <span>Manage Tasks</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="manage_tasks"
-                                        name="permissions[]" value="manage_tasks"
-                                        @if ($user->permissions->contains('feature_name', 'manage_tasks')) checked @endif>
+                                        name="permissions[]" value="manage_tasks">
                                     <label class="form-check-label" for="manage_tasks"></label>
                                 </div>
                             </div>
@@ -206,8 +202,7 @@
                                 <span>Manage Family Members</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="manage_family_members"
-                                        name="permissions[]" value="manage_family_members"
-                                        @if ($user->permissions->contains('feature_name', 'manage_family_members')) checked @endif>
+                                        name="permissions[]" value="manage_family_members">
                                     <label class="form-check-label" for="manage_family_members"></label>
                                 </div>
                             </div>
@@ -217,8 +212,7 @@
                                 <span>Manage Subscription</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="manage_subscription"
-                                        name="permissions[]" value="manage_subscription"
-                                        @if ($user->permissions->contains('feature_name', 'manage_subscription')) checked @endif>
+                                        name="permissions[]" value="manage_subscription">
                                     <label class="form-check-label" for="manage_subscription"></label>
                                 </div>
                             </div>
@@ -228,13 +222,162 @@
                                 <span>Emergency Documents</span>
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="emergency_doc"
-                                        name="permissions[]" value="emergency_doc"
-                                        @if ($user->permissions->contains('feature_name', 'emergency_doc')) checked @endif>
+                                        name="permissions[]" value="emergency_doc">
                                     <label class="form-check-label" for="emergency_doc"></label>
                                 </div>
                             </div>
 
+                        </div> --}}
+                        <div class="card">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs" id="permissionTabs" role="tablist">
+                                    @php
+                                        $modules = [
+                                            'Bills' => 'bills',
+                                            'Documents' => 'documents',
+                                            'Caregivers' => 'caregivers',
+                                            'Reports' => 'reports',
+                                            'Daily Tasks and Care logs' => 'tasks',
+                                            'Family Members' => 'members',
+                                            'Subscription' => 'subscription',
+                                            'Notes & Wellness' => 'notes',
+                                            'Meetings & Events' => 'meetings',
+                                            'Voting Pools' => 'pools',
+                                            'Seniors' => 'seniors',
+                                            'Caregiver Special' => 'caregiver',
+                                            // 'Admin' => 'admin',
+                                        ];
+                                    @endphp
+
+                                    @foreach ($modules as $label => $id)
+                                        <li class="nav-item">
+                                            <a class="nav-link @if ($loop->first) active @endif"
+                                                id="{{ $id }}-tab" data-bs-toggle="tab"
+                                                href="#{{ $id }}" role="tab">{{ $label }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content" id="permissionTabsContent">
+
+                                    {{-- Bills --}}
+                                    <div class="tab-pane fade show active" id="bills" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'bills'])
+                                        @include('components.permissions', ['feature' => 'bill_payments'])
+                                        @include('components.permissions', ['feature' => 'contributions'])
+                                        @include('components.permissions', ['feature' => 'reimbursements'])
+                                        <div class="mt-3"><span class="badge bg-info">shortfall_tracking_show</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Documents --}}
+                                    <div class="tab-pane fade" id="documents" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'documents'])
+                                        @include('components.permissions', ['feature' => 'medical_docs'])
+                                        @include('components.permissions', ['feature' => 'insurance_docs'])
+                                        @include('components.permissions', ['feature' => 'emergency_docs'])
+                                    </div>
+
+                                    {{-- Caregivers --}}
+                                    <div class="tab-pane fade" id="caregivers" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'caregivers'])
+                                        <div class="mt-3">
+                                            <span class="badge bg-info">roles_assign</span>
+                                            <span class="badge bg-info">roles_update</span>
+                                            <span class="badge bg-info">roles_delete</span>
+                                            <span class="badge bg-info">roles_show</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Reports --}}
+                                    <div class="tab-pane fade" id="reports" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'reports'])
+                                    </div>
+
+                                    {{-- Tasks & Requests --}}
+                                    <div class="tab-pane fade" id="tasks" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'tasks'])
+                                        {{-- @include('components.permissions', ['feature' => 'requests']) --}}
+                                    </div>
+
+                                    {{-- Family Members --}}
+                                    <div class="tab-pane fade" id="members" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'members'])
+                                        <div class="mt-3">
+                                            <span class="badge bg-info">permissions_assign</span>
+                                            <span class="badge bg-info">permissions_update</span>
+                                            <span class="badge bg-info">permissions_delete</span>
+                                            <span class="badge bg-info">permissions_show</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Subscription --}}
+                                    <div class="tab-pane fade" id="subscription" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'subscription'])
+                                        @include('components.permissions', [
+                                            'feature' => 'payment_methods',
+                                        ])
+                                    </div>
+
+                                    {{-- Notes & Wellness --}}
+                                    <div class="tab-pane fade" id="notes" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'family_notes'])
+                                        {{-- @include('components.permissions', [
+                                            'feature' => 'wellness_checkins',
+                                        ]) --}}
+                                        @include('components.permissions', [
+                                            'feature' => 'voice_journals',
+                                        ])
+                                    </div>
+
+                                    {{-- Meetings & Events --}}
+                                    <div class="tab-pane fade" id="meetings" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'meetings'])
+                                        @include('components.permissions', ['feature' => 'events'])
+                                        @include('components.permissions', ['feature' => 'vacations'])
+                                    </div>
+
+                                    {{-- Voting Pools --}}
+                                    <div class="tab-pane fade" id="pools" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'pools'])
+                                        <div class="mt-3">
+                                            <span class="badge bg-info">votes_cast</span>
+                                            <span class="badge bg-info">votes_view</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Seniors --}}
+                                    <div class="tab-pane fade" id="seniors" role="tabpanel">
+                                        @include('components.permissions', ['feature' => 'daily_updates'])
+                                        <div class="mt-3">
+                                            <span class="badge bg-info">notifications_update</span>
+                                            <span class="badge bg-info">notifications_show</span>
+                                            <span class="badge bg-info">profile_update</span>
+                                            <span class="badge bg-info">profile_show</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Caregiver Special --}}
+                                    <div class="tab-pane fade" id="caregiver" role="tabpanel">
+                                        <div class="mt-3">
+                                            <span class="badge bg-info">activity_timeline_show</span>
+                                            <span class="badge bg-info">emergency_protocol_show</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Admin --}}
+                                    {{-- <div class="tab-pane fade" id="admin" role="tabpanel">
+                                        <div class="mt-3">
+                                            <span class="badge bg-danger">super_admin_only</span>
+                                        </div>
+                                    </div> --}}
+
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                     <br>
                     <button class="btn btn-primary" type="submit" id="registerForm">Submit</button>

@@ -32,7 +32,7 @@ class VoiceJournalController extends Controller
             //     'title' => 'nullable|string|max:255',
             // ]);
         
-        dd($request->all());
+        // dd($request->all());
         $audioData = $request->recorded_voice;
         $audioData = explode(',', $audioData)[1]; // remove "data:audio/webm;base64,"
         $audioData = base64_decode($audioData);

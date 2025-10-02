@@ -15,7 +15,7 @@
                     <span class="badge bg-secondary">{{ ucfirst($task->status) }}</span>
                 </p>
                 <p><strong>Owner:</strong> {{ $task->owner->name }}</p>
-                <p><strong>Assignee:</strong> {{ $task->assignee->name }}</p>
+                <p><strong>Assignee:</strong> {{ $task->assignee->name ?? '--' }}</p>
                 <p><strong>Details:</strong> {{ $task->details }}</p>
             </div>
         </div>

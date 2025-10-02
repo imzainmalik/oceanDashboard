@@ -11,7 +11,7 @@ use Yajra\DataTables\Facades\DataTables;
 class TaskController extends Controller
 {
 
-        /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -21,30 +21,35 @@ class TaskController extends Controller
         $this->middleware('auth');
     }
 
-    
+
     public function index(Request $request)
     {
         // dd(auth()->user()->id);
-    $tasks = Task::with(['owner','assignee'])
-        ->where('is_deleted', 0)
-        ->where('owner_id', auth()->user()->id)
-        ->orwhere('assignee_id', auth()->user()->id) 
-        ->get();
+        $tasks = Task::with(['owner', 'assignee'])
+            ->where('is_deleted', 0)
+            ->where('owner_id', auth()->user()->id)
+            ->orwhere('assignee_id', auth()->user()->id)
+            ->orwhere('assignee_id', null)
+            ->get();
         // dd($tasks);
         if ($request->ajax()) {
             return DataTables::of($tasks)
-                ->addColumn('owner', fn ($row) => $row->owner?->name ?? '-')
-                ->addColumn('assignee', fn ($row) => $row->assignee?->name ?? '-')
-                ->addColumn('status', fn ($row) => '<span class="badge bg-secondary">'.ucfirst($row->status).'</span>')
+                ->addColumn('owner', fn($row) => $row->owner?->name ?? '-')
+                ->addColumn('assignee', fn($row) => $row->assignee?->name ?? '-')
+                ->addColumn('status', fn($row) => '<span class="badge bg-secondary">' . ucfirst($row->status) . '</span>')
                 ->addColumn('actions', function ($row) {
-                    return '
-                    <a href="'.route('familyOwner.tasks.show', $row->id).'" class="btn btn-sm btn-info">View</a>
-                    <a href="'.route('familyOwner.tasks.edit', $row->id).'" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="'.route('familyOwner.tasks.destroy', $row->id).'" method="POST" style="display:inline;">
-                        '.csrf_field().method_field('DELETE').'
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Delete this task?\')">Delete</button>
-                    </form>
-                ';
+                    $btns = '';
+                    $btns .= '<a href="' . route('familyOwner.tasks.show', $row->id) . '" class="btn btn-sm btn-info">View</a>';
+                    if (auth()->user()->role->id == 4) {
+                        $btns .= '<a href="' . route('familyOwner.tasks.edit', $row->id) . '" class="btn btn-sm btn-warning">Edit</a>';
+                        $btns .= '<form action="' . route('familyOwner.tasks.destroy', $row->id) . '" method="POST" style="display:inline;">
+                            ' . csrf_field() . method_field('DELETE') . '
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm(\'Delete this task?\')">Delete</button>
+                        </form>';
+                    }
+
+
+                    return $btns;
                 })
                 ->rawColumns(['status', 'actions', 'owner', 'assignee'])
                 ->make(true);
@@ -56,13 +61,14 @@ class TaskController extends Controller
     public function create()
     {
         $tenant = Tenant::where('owner_id', auth()->user()->id)->pluck('child_id')->toArray();
-        $users= User::whereIn('id',$tenant)->get();
+        $users = User::whereIn('id', $tenant)->get();
         // dd($users);
         return view('tasks.create', compact('users'));
     }
 
     public function store(Request $request)
     {
+        check_pemission('tasks_insert', auth()->user()->role_id);
         $request->validate([
             'title' => 'required|string|max:255',
             'type' => 'required|in:medical,non-medical',
@@ -86,6 +92,7 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        check_pemission('tasks_show', auth()->user()->role_id);
         $task->load('owner', 'assignee', 'comments.user');
 
         return view('tasks.show', compact('task'));
@@ -101,6 +108,7 @@ class TaskController extends Controller
 
     public function update(Request $request, Task $task)
     {
+        check_pemission('tasks_update', auth()->user()->role_id);
         // dd($request->all());
         $request->validate([
             'title' => 'required|string|max:255',
@@ -112,7 +120,7 @@ class TaskController extends Controller
         $task->update($request->only(['title', 'type', 'assignee_id', 'details', 'status']));
         $assignee_details = User::find($request->assignee_id);
 
-        
+
         make_log(auth()->user()->id, auth()->user()->name, "Task updated", " " . auth()->user()->name . " Updated Task for" . $assignee_details->name . " ");
 
         return redirect()->route('familyOwner.tasks.index')->with('success', 'Task updated successfully!');
@@ -120,6 +128,7 @@ class TaskController extends Controller
 
     public function destroy($task)
     {
+        check_pemission('tasks_delete', auth()->user()->role_id);
         // $task->delete();
         $task_details = Task::find($task);
         $task = Task::where('id', $task)->update(array(

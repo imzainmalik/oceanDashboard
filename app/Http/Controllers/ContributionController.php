@@ -21,9 +21,9 @@ class ContributionController extends Controller
 
         if ($request->ajax()) {
             $query = BillPayment::with('bill')
-                ->select('bill_payments.*') 
+                ->select('bill_payments.*')
                 ->where('payer_id', auth()->id())
-                ->orderBy('bill_payments.created_at', 'desc'); 
+                ->orderBy('bill_payments.created_at', 'desc');
 
             return DataTables::of($query)
                 ->addColumn('bill', function ($row) {
@@ -69,6 +69,8 @@ class ContributionController extends Controller
 
     public function store(Request $request)
     {
+        // if (!auth()->user()->hasPermission('contributions_insert') || auth()->user()->check_if_owner == 4) abort(403);
+        check_pemission('contributions_insert', auth()->user()->role_id);
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'type'   => 'required|in:0,1',
@@ -117,6 +119,9 @@ class ContributionController extends Controller
 
     public function show(Contributions $contribution)
     {
+        // if (!auth()->user()->hasPermission('contributions_show') || auth()->user()->check_if_owner == 4) abort(403);
+        check_pemission('contributions_show', auth()->user()->role_id);
+
         return view('family_member.contributions.show', compact('contribution'));
     }
 

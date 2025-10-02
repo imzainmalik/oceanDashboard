@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+// use App\Http\Controllers\Auth\LoginController;
+// use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\CareGiverController;
 use App\Http\Controllers\ContributionController;
 use App\Http\Controllers\DailyUpdateController;
 use App\Http\Controllers\DocumentRequestController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\VoiceJournalController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\VotingCommentController;
 use App\Http\Controllers\VotingPoolController;
+use App\Http\Middleware\CaregiverMiddleware;
 use App\Http\Middleware\FamilyMemberMiddleware;
 use App\Http\Middleware\FamilyOwnerMiddleware;
 use App\Http\Middleware\SeniorMiddleware;
@@ -57,20 +59,43 @@ Route::post('/familyOwner/tasks/{task}', [TaskController::class, 'update'])->nam
 Route::delete('/familyOwner/tasks/{task}', [TaskController::class, 'destroy'])->name('familyOwner.tasks.destroy');
 Route::post('/tasks/comment/{task}', [TaskController::class, 'comment_store'])->name('familyOwner.tasks.comment.store');
 
-Route::get('/document-requests/all', [DocumentRequestController::class, 'index'])->name('document.requests.all');
-Route::get('/document-requests/create', [DocumentRequestController::class, 'create'])->name('document.requests.create');
+Route::get('/document/requests/all', [DocumentRequestController::class, 'index'])->name('document.requests.all');
+Route::get('/document/requests/create', [DocumentRequestController::class, 'create'])->name('document.requests.create');
 
-Route::post('/document-requests', [DocumentRequestController::class, 'storeRequest'])->name('document.requests.store');
-Route::get('/document-requests/{documentRequest}', [DocumentRequestController::class, 'show'])->name('document.requests.show');
-Route::post('/document-requests/{documentRequest}/submit', [DocumentRequestController::class, 'submitDocument'])->name('document.requests.submit');
-Route::get('/document-requests/{documentRequest}/download', [DocumentRequestController::class, 'download'])->name('document.requests.download');
-Route::post('/document-requests/{documentRequest}/cancel', [DocumentRequestController::class, 'cancel'])->name('document.requests.cancel');
+Route::post('/document/requests', [DocumentRequestController::class, 'storeRequest'])->name('document.requests.store');
+Route::get('/document/requests/{documentRequest}', [DocumentRequestController::class, 'show'])->name('document.requests.show');
+Route::post('/document/requests/{documentRequest}/submit', [DocumentRequestController::class, 'submitDocument'])->name('document.requests.submit');
+Route::get('/document/requests/{documentRequest}/download', [DocumentRequestController::class, 'download'])->name('document.requests.download');
+Route::post('/document/requests/{documentRequest}/cancel', [DocumentRequestController::class, 'cancel'])->name('document.requests.cancel');
 
 Route::middleware(SuperAdminMiddleware::class)->group(function () {
     Route::get('/admin/dashboard', [SuperAdminController::class, 'index'])->name('superadmin.index');
 });
 
+
+Route::middleware(CaregiverMiddleware::class)->group(function () {
+    Route::get('/caregiver/dashboard', [CareGiverController::class, 'index'])->name('caregiver.index');
+    Route::get('/caregiver/daily-updates', [DailyUpdateController::class, 'index'])->name('caregiver.daily-updates.index');
+    Route::get('/caregiver/tasks', [TaskController::class, 'index'])->name('caregiver.tasks.index');     // DataTable page
+    Route::get('caregiver/family-notes', [FamilyNoteController::class, 'index'])->name('caregiver.family-notes.index');
+    Route::get('caregiver/document-requests/all', [DocumentRequestController::class, 'index'])->name('caregiver.document.requests.all');
+});
+
+
 Route::middleware(FamilyMemberMiddleware::class)->group(function () {
+
+        Route::get('familyMember/meetings', [MeetingController::class, 'index'])->name('familyMember.meetings.index');
+
+
+    Route::get('familyMember/all-members', [FamilyMemberManageController::class, 'index'])->name('familyMember.all_members');
+    Route::get('familyMember/create-member', [FamilyMemberManageController::class, 'add_member'])->name('familyMember.add_member');
+    Route::post('familyMember/save-member', [FamilyMemberManageController::class, 'save_member'])->name('familyMember.save_member');
+    Route::get('familyMember/edit-member/{id}', [FamilyMemberManageController::class, 'edit_member'])->name('familyMember.edit_member');
+    Route::post('familyMember/update-member/{id}', [FamilyMemberManageController::class, 'update_member'])->name('familyMember.update_member');
+    Route::get('familyMember/delete-member/{id}', [FamilyMemberManageController::class, 'delete_member'])->name('familyMember.delete_member');
+    Route::get('familyMember/activate-member/{id}', [FamilyMemberManageController::class, 'active_member'])->name('familyMember.active_member');
+
+
     Route::get('/familyMember/dashboard', [FamilyMemberController::class, 'index'])->name('familyMember.index');
     Route::get('/familyMember/daily-updates', [DailyUpdateController::class, 'index'])->name('familyMember.daily-updates.index');
     Route::get('familyMember/voting', [VotingPoolController::class, 'index'])->name('familyMember.pools.index');
@@ -101,7 +126,6 @@ Route::middleware(FamilyMemberMiddleware::class)->group(function () {
     Route::get('familyMember/events/index', [VacationController::class, 'index'])->name('familyMember.events.index');
     Route::get('familyMember/events/{vacation}', [VacationController::class, 'show'])->name('familyMember.events.show');
 
-
     Route::get('familyMember/family-notes', [FamilyNoteController::class, 'index'])->name('familyMember.family-notes.index');
     Route::get('familyMember/family-notes/create', [FamilyNoteController::class, 'create'])->name('familyMember.family-notes.create');
     Route::post('familyMember/family-notes/store', [FamilyNoteController::class, 'store'])->name('familyMember.family-notes.store');
@@ -109,6 +133,8 @@ Route::middleware(FamilyMemberMiddleware::class)->group(function () {
     Route::get('familyMember/family-notes/{familyNote}/edit', [FamilyNoteController::class, 'edit'])->name('familyMember.family-notes.edit');
     Route::put('familyMember/family-notes/{familyNote}/update', [FamilyNoteController::class, 'update'])->name('familyMember.family-notes.update');
     Route::delete('familyMember/family-notes/{familyNote}/delete', [FamilyNoteController::class, 'destroy'])->name('familyMember.family-notes.destroy');
+    Route::get('/familyMember/tasks', [TaskController::class, 'index'])->name('familyMember.tasks.index');     // DataTable page
+
 });
 
 Route::middleware([SeniorMiddleware::class])->group(function () {
@@ -201,3 +227,6 @@ Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
         return back()->with('success', 'Recurring setting updated.');
     })->name('subscriptions.toggleRecurring');
 });
+
+
+// Route::get('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');

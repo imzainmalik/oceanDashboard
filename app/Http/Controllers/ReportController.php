@@ -22,6 +22,7 @@ class ReportController extends Controller
 
     public function index(Request $request)
     {
+        check_pemission('reports_show', auth()->user()->role_id);
 
         if ($request->ajax()) {
             $ownerId = auth()->id();
@@ -83,7 +84,7 @@ class ReportController extends Controller
         //  dd($report->count());
         // return $pdf->download('monthly_summary_'.now()->subMonth()->format('F_Y').'.pdf');
         // return view('family_owner.report.report_pdf', compact('report'));
-
+        // dd($request->all());
         if ($request->has('member')) {
             // dd($request->has('member'));
             $memberIds = $request->member; // array of IDs
@@ -97,7 +98,7 @@ class ReportController extends Controller
                 ->whereHas('tasks', fn ($q) => $q->where('assignee_id', $memberIds))
                 ->get();
             // dd($report);
-        }
+        } 
         $pdf = Pdf::loadView('family_owner.report.report_pdf', compact('report'));
 
         return $pdf->download('monthly_task_summary_'.Carbon::parse(request('start_date'))->format('F d, Y').'_to_'.Carbon::parse(request('end_date'))->format('F d, Y').'.pdf');

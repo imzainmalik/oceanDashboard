@@ -11,6 +11,8 @@ class MeetingController extends Controller
 {
     public function index()
     {
+        // check_pemission('meetings_show', auth()->user()->role_id);
+
         $meetings = Meeting::where('senior_id', Auth::user()->id)->latest()->get();
 
         return view('senior.meetings.index', compact('meetings'));
@@ -23,6 +25,7 @@ class MeetingController extends Controller
 
     public function store(Request $request, ZoomService $zoom)
     {
+        check_pemission('meetings_insert', auth()->user()->role_id);
 
         $meetingData = $zoom->createMeeting(
             $request->topic,
@@ -57,6 +60,8 @@ class MeetingController extends Controller
 
     public function show(Meeting $meeting)
     {
+        check_pemission('meetings_show', auth()->user()->role_id);
+
         return view('senior.meetings.show', compact('meeting'));
     }
 
@@ -67,6 +72,7 @@ class MeetingController extends Controller
 
     public function update(Request $request, Meeting $meeting)
     {
+        check_pemission('meetings_update', auth()->user()->role_id);
         $request->validate([
             'topic' => 'required|string|max:255',
             'agenda' => 'nullable|string',
@@ -82,6 +88,7 @@ class MeetingController extends Controller
 
     public function destroy($meeting)
     {
+        check_pemission('meetings_delete', auth()->user()->role_id);
         // $meeting->delete();
         Meeting::where('id', $meeting)->update(array(
             'is_active' => 1

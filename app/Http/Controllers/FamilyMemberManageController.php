@@ -26,12 +26,25 @@ class FamilyMemberManageController extends Controller
 
     public function index(Request $request)
     {
-        $tenants = Tenant::where('owner_id', auth()->user()->id)
-            ->whereHas('users', function ($q) {
-                $q->whereIn('account_status', [0, 1]);
-            })
-            ->orderBy('id', 'DESC')
-            ->get();
+        // dd($request, auth()->user()->id);
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
+        // dd($tenant);
+        if ($tenant != null) {
+            $tenants = Tenant::where('owner_id', $tenant->owner_id)
+                ->whereHas('users', function ($q) {
+                    $q->where('account_status', 0);
+                    $q->where('role_id', 5);
+                })
+                ->orderBy('id', 'DESC')
+                ->get();
+        } else {
+            $tenants = Tenant::where('owner_id', auth()->user()->id)
+                ->whereHas('users', function ($q) {
+                    $q->where('account_status', 0); 
+                })
+                ->orderBy('id', 'DESC')
+                ->get();
+        }
         // dd($tenants);
         // $tenants = Tenant::where('owner_id', auth()->user()->id)
         //     ->where('owner', 'account_status', '!=', 2)
@@ -68,9 +81,9 @@ class FamilyMemberManageController extends Controller
 
                         if ($total > 3) {
                             $badges .= '<button type="button" class="btn btn-link p-0 show-more-perms" 
-                        data-bs-toggle="collapse" data-bs-target="#morePerms' . $tenant->id . '">
-                        Show More
-                    </button>';
+                                            data-bs-toggle="collapse" data-bs-target="#morePerms' . $tenant->id . '">
+                                            Show More
+                                        </button>';
 
                             $badges .= '<div class="collapse mt-2" id="morePerms' . $tenant->id . '">';
                             foreach ($permissions->slice(3) as $permission) {
@@ -103,11 +116,11 @@ class FamilyMemberManageController extends Controller
                     $randomColor = $colors[array_rand($colors)];
                     if ($tenant->users->role_id == 2) {
                         $role = '<span class="badge me-1"style="background-color:' . $randomColor . ';color:white;">Senior</span>';
-                    } elseif($tenant->users->role_id == 3) {
+                    } elseif ($tenant->users->role_id == 3) {
                         $role = '<span class="badge me-1" style="background-color:' . $randomColor . ';color:white;">Family Member</span>';
-                    }elseif($tenant->users->role_id == 4) {
+                    } elseif ($tenant->users->role_id == 4) {
                         $role = '<span class="badge me-1"style="background-color:' . $randomColor . ';color:white;">Family Leader</span>';
-                    }else {
+                    } else {
                         $role = '<span class="badge me-1"style="background-color:' . $randomColor . ';color:white;">Caregiver</span>';
                     }
                     return $role;
@@ -118,21 +131,26 @@ class FamilyMemberManageController extends Controller
                         <button type="button" class="dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
                             <i class="fas fa-ellipsis-h"></i>
                         </button>
-                        <ul class="dropdown-menu">
-                            <li class="first"><a class="dropdown-item" href="' . route('familyOwner.edit_member', $tenant->users->id) . '">Edit</a></li>
-                            <li class="last"><a class="dropdown-item" href="javascript:;" onclick="delete_member(' . $tenant->users->id . ')">Delete</a></li>';
-
-                    if ($tenant->users->account_status == 0) {
-                        $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="inactivate_member(' . $tenant->users->id . ')">Inactivate</a></li>';
-                    } else {
-                        $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="activate_member(' . $tenant->users->id . ')">Activate</a></li>';
+                        <ul class="dropdown-menu">';
+                    if (auth()->user()->hasPermission('caregivers_update') || auth()->user()->check_if_owner == 4) {
+                        $actions .= ' <li class="first"><a class="dropdown-item" href="' . route('familyOwner.edit_member', $tenant->users->id) . '">Edit</a></li>';
+                    }
+                    if (auth()->user()->hasPermission('caregivers_delete') || auth()->user()->check_if_owner == 4) {
+                        $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="delete_member(' . $tenant->users->id . ')">Delete</a></li>';
+                    }
+                    if (auth()->user()->check_if_owner == 4) {
+                        if ($tenant->users->account_status == 0) {
+                            $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="inactivate_member(' . $tenant->users->id . ')">Inactivate</a></li>';
+                        } else {
+                            $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="activate_member(' . $tenant->users->id . ')">Activate</a></li>';
+                        }
                     }
 
                     $actions .= '</ul></div>';
 
                     return $actions;
                 })
-                ->rawColumns(['user', 'permissions', 'status', 'action', 'acc_status','acc_roll']) // HTML allow
+                ->rawColumns(['user', 'permissions', 'status', 'action', 'acc_status', 'acc_roll']) // HTML allow
                 ->make(true);
         }
 
@@ -146,8 +164,11 @@ class FamilyMemberManageController extends Controller
 
     public function save_member(Request $request)
     {
-        // dd($request->all());
         // return greetUser("zain"); // Output: Hello, Zain!
+        
+        // if (!auth()->user()->hasPermission('caregivers_insert') || auth()->user()->role_id != 4) abort(403);
+        check_pemission('caregivers_insert', auth()->user()->role_id);
+        // dd(auth()->user()->role->id);
 
         if ($request->hasFile('d_pic')) {
             $attechment = $request->file('d_pic');
@@ -155,6 +176,13 @@ class FamilyMemberManageController extends Controller
             $attechment->move(public_path('display_picture'), $img_2);
         } else {
             $img_2 = null;
+        }
+
+        $tenant = Tenant::where('child_id', auth()->user()->id)->first();
+        if($tenant != null){
+            $owner_id = $tenant->owner_id;
+        }else{
+            $owner_id = auth()->user()->id;
         }
 
         $create_user = new User;
@@ -166,7 +194,7 @@ class FamilyMemberManageController extends Controller
         $create_user->save();
 
         $create_tenant = new Tenant;
-        $create_tenant->owner_id = auth()->user()->id;
+        $create_tenant->owner_id = $owner_id;
         $create_tenant->owner_has_child = 1;
         $create_tenant->child_id = $create_user->id;
         $create_tenant->save();
@@ -200,7 +228,7 @@ class FamilyMemberManageController extends Controller
 
         make_log(auth()->user()->id, auth()->user()->name, 'Created Family member', ' ' . auth()->user()->name . ' Created ' . $request->full_name . ' as Member ');
 
-        return redirect()->route('familyOwner.all_members')->with('success', 'Memeber created');
+        return redirect()->route(''.auth()->user()->custom_role.'.all_members')->with('success', 'Memeber created');
     }
 
     public function edit_member(Request $request, $id)
@@ -214,13 +242,14 @@ class FamilyMemberManageController extends Controller
     {
 
         // dd($request->all());
+        check_pemission('caregivers_update', auth()->user()->role_id);
 
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
             'd_pic' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
             'cnfrm_password' => 'nullable|min:8|confirmed',
-            'role' => 'required|integer|in:1,2,3,4', // adjust role IDs
+            // 'role' => 'required|in:1,2,3,4', // adjust role IDs
             'permissions' => 'nullable|array',
             'permissions.*' => 'string|max:100',
 
@@ -246,9 +275,9 @@ class FamilyMemberManageController extends Controller
         }
         $update_user->name = $request->full_name;
 
-        if ($request->hasFile('d_pic')) {
-            $update_user->d_pic = $img_2; // updated image if uploaded
-        }
+        // if ($request->hasFile('d_pic')) {
+        //     $update_user->d_pic = $img_2; // updated image if uploaded
+        // }
 
         if ($update_user->email != $request->email) {
             $update_user->email = $request->email;
@@ -316,6 +345,7 @@ class FamilyMemberManageController extends Controller
     public function delete_member($id)
     {
         // dd($id);
+        check_pemission('caregivers_delete', auth()->user()->role_id);
         $user = User::findorfail($id);
         User::where('id', $id)->update([
             'account_status' => 2,

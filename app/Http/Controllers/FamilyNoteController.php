@@ -30,6 +30,7 @@ class FamilyNoteController extends Controller
 
     public function store(Request $request)
     {
+        check_pemission('family_notes_insert', auth()->user()->role_id);
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -59,16 +60,21 @@ class FamilyNoteController extends Controller
 
     public function show(FamilyNote $familyNote)
     {
+        check_pemission('family_notes_show', auth()->user()->role_id);
+
         return view('family_owner.family_notes.show', compact('familyNote'));
     }
 
     public function edit(FamilyNote $familyNote)
     {
+        
         return view('family_owner.family_notes.edit', compact('familyNote'));
     }
 
     public function update(Request $request, FamilyNote $familyNote)
     {
+        check_pemission('family_notes_update', auth()->user()->role_id);
+
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',

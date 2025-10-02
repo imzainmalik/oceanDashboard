@@ -52,7 +52,7 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
+ 
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
@@ -70,7 +70,12 @@ class User extends Authenticatable
 
     public function permissions()
     {
-        return $this->hasMany(Permission::class, 'user_id', 'id');
+        return $this->hasMany(Permission::class, 'user_id');
+    }
+
+    public function hasPermission($feature)
+    {
+        return $this->permissions->pluck('feature_name')->contains($feature);
     }
 
     public function poolVotings()

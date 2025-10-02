@@ -449,11 +449,15 @@
                                                 <tr>
                                                     <td>
                                                         <div class="user">
+                                                            @if($task->assignee != null)
                                                             <img src="{{ $task->assignee->d_pic
                                                                 ? asset('display_picture/' . $task->assignee->d_pic)
                                                                 : asset('caregiver/assets/images/default.png') }}"
                                                                 alt="">
                                                             <p>{{ $task->assignee->name }}</p>
+                                                            @else
+                                                                <p style="color:red;">Need out side for help</p>
+                                                            @endif
                                                         </div>
                                                     </td>
                                                     <td>{{ $task->title }}</td>

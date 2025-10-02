@@ -7,10 +7,18 @@
                 <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home" type="button"
                     role="tab" aria-controls="home" aria-selected="true">Document Vault</button>
             </li>
+             {{-- @if (auth()->user()->hasPermission('medical_docs_insert') || auth()->user()->check_if_owner == 4 != null) --}}
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile" type="button"
                     role="tab" aria-controls="profile" aria-selected="false">Medical Document Vault</button>
             </li>
+            {{-- @endif --}}
+            {{-- @if (auth()->user()->hasPermission('insurance_docs_insert') || auth()->user()->check_if_owner == 4 != null) --}}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile" type="button"
+                    role="tab" aria-controls="profile" aria-selected="false">Insurance Document Vault</button>
+            </li>
+            {{-- @endif --}}
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
