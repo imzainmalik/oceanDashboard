@@ -1,4 +1,5 @@
 {{-- @dd(auth()->user()); --}}
+
 @if (auth()->user()->role->id == 5)
     @include('layouts.caregiver.layout')
 @elseif(auth()->user()->role->id == 1)

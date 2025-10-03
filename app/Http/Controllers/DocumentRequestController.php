@@ -52,7 +52,7 @@ class DocumentRequestController extends Controller
                 })
                 ->orderBy('id', 'DESC')
                 ->get();
-        }
+        }   
         // dd($users);
         // $users = Tenant::where('owner_id', auth()->user()->id)
         //     ->whereHas('users', function ($q) {
@@ -109,10 +109,9 @@ class DocumentRequestController extends Controller
     public function show(DocumentRequest $documentRequest)
     {
         // if (!auth()->user()->hasPermission('documents_show') || auth()->user()->check_if_owner == 4) abort(403);
-            check_pemission('documents_show', auth()->user()->role_id);
+        check_pemission('documents_show', auth()->user()->role_id);
         $user = Auth::user();
-
-        
+ 
         if ($documentRequest->status === 'pending' && $documentRequest->isExpired()) {
             $documentRequest->status = 'expired';
             $documentRequest->save();
@@ -123,6 +122,7 @@ class DocumentRequestController extends Controller
 
     public function submitDocument(Request $request, DocumentRequest $documentRequest)
     {
+        // dd($request->all());
         $user = Auth::user();
         if ($user->id !== $documentRequest->target_user_id) {
             abort(403);
@@ -152,7 +152,7 @@ class DocumentRequestController extends Controller
         $documentRequest->save();
 
         $target_user = User::find((int) $request->target_user_id);
-        $requester_id = User::find((int) $target_user->requester_id);
+        $requester_id = User::find((int) $documentRequest->target_user_id);
 
         make_log(auth()->user()->id, auth()->user()->name, 'Document Requested', ' ' . auth()->user()->name . ' Submitted Document to ' . $requester_id->name . '');
 

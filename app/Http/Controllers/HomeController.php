@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -27,25 +28,36 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function check_role(){
-        // dd(auth()->user()->role);
-        if(auth()->user()->role->id == 1){
-            return redirect()->route('superadmin.index');
+    public function check_role()
+    {
+
+        $check_customer = Subscription::where('user_id', auth()->user()->id)->first();
+        if ($check_customer != null) {
+            $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+            $subscription = $stripe->subscriptions->retrieve($check_customer->stripe_id, []);
+        } else {
+            $subscription = null;
         }
-        elseif(auth()->user()->role->id == 2){
-            return redirect()->route('senior.index');
-        }
-        elseif(auth()->user()->role->id == 3){
-            return redirect()->route('familyMember.index');
-        }
-        elseif(auth()->user()->role->id == 4){
-            return redirect()->route('familyOwner.index');
-        }
-        elseif(auth()->user()->role->id == 5){
-            return redirect()->route('careGiver.index');
-        }else{
-            Auth::logout();
-            return redirect()->route('login')->with('error','dd adad');
+
+        dd($subscription);
+        if ($subscription == null || $subscription->status != "active") {
+            return redirect()->route('subscription.packages');
+        } else {
+            // dd(auth()->user()->role);
+            if (auth()->user()->role->id == 1) {
+                return redirect()->route('superadmin.index');
+            } elseif (auth()->user()->role->id == 2) {
+                return redirect()->route('senior.index');
+            } elseif (auth()->user()->role->id == 3) {
+                return redirect()->route('familyMember.index');
+            } elseif (auth()->user()->role->id == 4) {
+                return redirect()->route('familyOwner.index');
+            } elseif (auth()->user()->role->id == 5) {
+                return redirect()->route('careGiver.index');
+            } else {
+                Auth::logout();
+                return redirect()->route('login')->with('error', 'dd adad');
+            }
         }
     }
 }

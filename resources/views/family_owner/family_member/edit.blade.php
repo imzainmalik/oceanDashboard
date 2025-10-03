@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div class="page-box py-4">
-        @if($errors->any())
+        @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
@@ -35,7 +35,7 @@
                         <div class="col-6">
                             <label> Password</label>
                             <input type="password" class="form-control" name="password" id="password" />
-                        </div> 
+                        </div>
                         <div class="col-6">
                             <label>Confirm Password</label>
                             <input type="password" class="form-control" name="cnfrm_password" id="confirm_password" />
@@ -58,7 +58,7 @@
                                 <option value="5" @if ($user->role->id == 3) selected @endif>Family Member
                                 </option>
                             </select>
-                        </div> 
+                        </div>
                         @if ($user->role->id == 2)
                             @php
                                 $senoir = App\Models\Senior::where('user_id', $user->id)->first();
@@ -140,9 +140,9 @@
                     </div>
 
                     <hr>
-                    {{-- @dd($user->permissions); --}} 
+                    {{-- @dd($user->permissions); --}}
                     <br>
-                      <div class="container mt-4">
+                    <div class="container mt-4">
                         <h3 class="mb-4">⚙️ Setup Permissions</h3>
 
                         {{-- <div class="list-group">
@@ -239,12 +239,12 @@
                                             'Reports' => 'reports',
                                             'Daily Tasks and Care logs' => 'tasks',
                                             'Family Members' => 'members',
-                                            'Subscription' => 'subscription',
+                                            // 'Subscription' => 'subscription',
                                             'Notes & Wellness' => 'notes',
-                                            'Meetings & Events' => 'meetings',
+                                            'Meetings' => 'meetings',
                                             'Voting Pools' => 'pools',
                                             'Seniors' => 'seniors',
-                                            'Caregiver Special' => 'caregiver',
+                                            // 'Caregiver Special' => 'caregiver',
                                             // 'Admin' => 'admin',
                                         ];
                                     @endphp
@@ -284,10 +284,8 @@
                                     <div class="tab-pane fade" id="caregivers" role="tabpanel">
                                         @include('components.permissions', ['feature' => 'caregivers'])
                                         <div class="mt-3">
-                                            <span class="badge bg-info">roles_assign</span>
-                                            <span class="badge bg-info">roles_update</span>
-                                            <span class="badge bg-info">roles_delete</span>
-                                            <span class="badge bg-info">roles_show</span>
+                                            <span class="badge bg-info">User can only manage details of care givers, can't
+                                                Assign different role</span>
                                         </div>
                                     </div>
 
@@ -314,12 +312,12 @@
                                     </div>
 
                                     {{-- Subscription --}}
-                                    <div class="tab-pane fade" id="subscription" role="tabpanel">
+                                    {{-- <div class="tab-pane fade" id="subscription" role="tabpanel">
                                         @include('components.permissions', ['feature' => 'subscription'])
                                         @include('components.permissions', [
                                             'feature' => 'payment_methods',
                                         ])
-                                    </div>
+                                    </div> --}}
 
                                     {{-- Notes & Wellness --}}
                                     <div class="tab-pane fade" id="notes" role="tabpanel">
@@ -327,16 +325,16 @@
                                         {{-- @include('components.permissions', [
                                             'feature' => 'wellness_checkins',
                                         ]) --}}
-                                        @include('components.permissions', [
+                                        {{-- @include('components.permissions', [
                                             'feature' => 'voice_journals',
-                                        ])
+                                        ]) --}}
                                     </div>
 
                                     {{-- Meetings & Events --}}
                                     <div class="tab-pane fade" id="meetings" role="tabpanel">
                                         @include('components.permissions', ['feature' => 'meetings'])
-                                        @include('components.permissions', ['feature' => 'events'])
-                                        @include('components.permissions', ['feature' => 'vacations'])
+                                        {{-- @include('components.permissions', ['feature' => 'events']) --}}
+                                        {{-- @include('components.permissions', ['feature' => 'vacations']) --}}
                                     </div>
 
                                     {{-- Voting Pools --}}

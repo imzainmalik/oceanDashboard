@@ -48,10 +48,10 @@ class BillController extends Controller
     {
         // if (!auth()->user()->hasPermission('bills_insert') || auth()->user()->check_if_owner == 4) abort(403);
         // family members who can be assigned to pay
-        check_pemission('bills_insert', auth()->user()->role_id);
+        // check_pemission('bills_insert', auth()->user()->role_id);
         $members = Tenant::where('owner_id', auth()->user()->id)
             ->get();
-
+        // dd($members);
         return view('family_owner.bills.create', compact('members'));
     }
 
@@ -67,9 +67,9 @@ class BillController extends Controller
         //     'details' => 'nullable|string',
         //     'type' => 'required|in:medical,non-medical',
         // ]);
-                check_pemission('bills_update', auth()->user()->role_id);
+        check_pemission('bills_insert', auth()->user()->role_id);
 
-        if (!auth()->user()->hasPermission('bills_update') || auth()->user()->check_if_owner == 4) abort(403);
+        // if (!auth()->user()->hasPermission('bills_update') || auth()->user()->check_if_owner == 4) abort(403);
         Bills::create([
             'owner_id' => auth()->id(),
             'assigned_to' => $request->assigned_to,
@@ -221,7 +221,7 @@ class BillController extends Controller
     public function destroy($id)
     {
         // if (!auth()->user()->hasPermission('bills_delete') || auth()->user()->check_if_owner == 4) abort(403);
-                        check_pemission('bills_delete', auth()->user()->role_id);
+        check_pemission('bills_delete', auth()->user()->role_id);
 
         $bill = Bills::findOrFail($id);
 
@@ -245,7 +245,7 @@ class BillController extends Controller
     public function decline(Bills $bill)
     {
         Bills::where('id', $bill->id)->update(['status' => 'declined']);
-
+  
         return redirect()->route('familyOwner.bills.index')->with('error', 'Bill declined.');
     }
 }

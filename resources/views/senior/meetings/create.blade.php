@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h3>+ Schedule Meeting</h3>
-    <form method="POST" action="{{ route('senior.meetings.store') }}">
+    <form method="POST" action="{{ route(''.auth()->user()->custom_role.'.meetings.store') }}">
         @csrf
         <div class="mb-3">
             <label>Topic</label>

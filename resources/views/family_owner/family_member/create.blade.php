@@ -223,12 +223,12 @@
                                             'Reports' => 'reports',
                                             'Daily Tasks and Care logs' => 'tasks',
                                             'Family Members' => 'members',
-                                            'Subscription' => 'subscription',
+                                            // 'Subscription' => 'subscription',
                                             'Notes & Wellness' => 'notes',
-                                            'Meetings & Events' => 'meetings',
+                                            'Meetings' => 'meetings',
                                             'Voting Pools' => 'pools',
                                             'Seniors' => 'seniors',
-                                            'Caregiver Special' => 'caregiver',
+                                            // 'Caregiver Special' => 'caregiver',
                                             // 'Admin' => 'admin',
                                         ];
                                     @endphp
@@ -268,10 +268,7 @@
                                     <div class="tab-pane fade" id="caregivers" role="tabpanel">
                                         @include('components.permissions', ['feature' => 'caregivers'])
                                         <div class="mt-3">
-                                            <span class="badge bg-info">roles_assign</span>
-                                            <span class="badge bg-info">roles_update</span>
-                                            <span class="badge bg-info">roles_delete</span>
-                                            <span class="badge bg-info">roles_show</span>
+                                            <span class="badge bg-info">User can only manage details of care givers, can't Assign different role</span> 
                                         </div>
                                     </div>
 
@@ -298,12 +295,12 @@
                                     </div>
 
                                     {{-- Subscription --}}
-                                    <div class="tab-pane fade" id="subscription" role="tabpanel">
+                                    {{-- <div class="tab-pane fade" id="subscription" role="tabpanel">
                                         @include('components.permissions', ['feature' => 'subscription'])
                                         @include('components.permissions', [
                                             'feature' => 'payment_methods',
                                         ])
-                                    </div>
+                                    </div> --}}
 
                                     {{-- Notes & Wellness --}}
                                     <div class="tab-pane fade" id="notes" role="tabpanel">
@@ -311,16 +308,16 @@
                                         {{-- @include('components.permissions', [
                                             'feature' => 'wellness_checkins',
                                         ]) --}}
-                                        @include('components.permissions', [
+                                        {{-- @include('components.permissions', [
                                             'feature' => 'voice_journals',
-                                        ])
+                                        ]) --}}
                                     </div>
 
                                     {{-- Meetings & Events --}}
                                     <div class="tab-pane fade" id="meetings" role="tabpanel">
                                         @include('components.permissions', ['feature' => 'meetings'])
-                                        @include('components.permissions', ['feature' => 'events'])
-                                        @include('components.permissions', ['feature' => 'vacations'])
+                                        {{-- @include('components.permissions', ['feature' => 'events']) --}}
+                                        {{-- @include('components.permissions', ['feature' => 'vacations']) --}}
                                     </div>
 
                                     {{-- Voting Pools --}}

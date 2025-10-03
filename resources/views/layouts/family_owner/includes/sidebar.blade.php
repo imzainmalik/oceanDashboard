@@ -11,9 +11,19 @@
                     <button><i class="fal fa-search"></i></button>
                     <input type="text" placeholder="Search">
                 </div>
-
+                    @php
+                        $check_customer = App\Models\Subscription::where('user_id', auth()->user()->id)->first();
+                        if($check_customer != null){
+                           $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
+                           $subscription = $stripe->subscriptions->retrieve($check_customer->stripe_id, []);
+                        }else{
+                            $subscription = null;
+                        }
+                        // dd($subscription);
+                    @endphp
                 <ul class="navbar-nav w-100">
                     <span class="subNav">General</span>
+                    @if($subscription != null && $subscription->status == "active")
                     <li>
                         <a href="{{ route('familyOwner.index') }}" class="nav-item nav-link">
                             <img src="{{ asset('family_owner/assets/images/menu-icon1.svg') }}" alt=""> Overview
@@ -62,6 +72,11 @@
                     <li>
                         <a href="{{ route('familyOwner.pools.index') }}"><img src="{{ asset('family_owner/assets/images/menu-icon7.svg ') }}" alt="">Voting pool</a>
                     </li>
+                    @else
+                    <li>
+                        <a href="{{ route('subscription.packages') }}"><img src="{{ asset('family_owner/assets/images/menu-icon7.svg ') }}" alt="">Subscribe</a>
+                    </li>
+                    @endif
                 </ul>
 
                 

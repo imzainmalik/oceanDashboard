@@ -10,8 +10,10 @@
 
 <body>
 
-    <div class="page-box">
-        @include('layouts.family_owner.includes.sidebar')
+
+
+    <div class="page-box"> 
+            @include('layouts.family_owner.includes.sidebar')  
         <div class="main-content">
             @include('layouts.family_owner.includes.header')
             @yield('content')
@@ -20,4 +22,5 @@
 
     @include('layouts.family_owner.includes.scripts')
 </body>
+
 </html>

@@ -29,6 +29,7 @@
                          <option value="0">Regular Document</option>
                          <option value="1">Medical Document</option>
                           <option value="2">Insurance Document</option>
+                          <option value="3">Emergency Document</option>
                     </select>
                 </div>
                 <div class="mb-3">

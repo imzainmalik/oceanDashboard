@@ -55,19 +55,19 @@ class MeetingController extends Controller
             'start_url' => $meetingData['start_url'],
         ]);
 
-        return redirect()->route('senior.meetings.index')->with('success', 'Meeting created successfully.');
+        return redirect()->route(''.auth()->user()->custom_role.'.meetings.index')->with('success', 'Meeting created successfully.');
     }
 
     public function show(Meeting $meeting)
     {
         check_pemission('meetings_show', auth()->user()->role_id);
 
-        return view('senior.meetings.show', compact('meeting'));
+        return view(''.auth()->user()->custom_role.'.meetings.show', compact('meeting'));
     }
 
     public function edit(Meeting $meeting)
     {
-        return view('senior.meetings.edit', compact('meeting'));
+        return view(''.auth()->user()->custom_role.'.meetings.edit', compact('meeting'));
     }
 
     public function update(Request $request, Meeting $meeting)
@@ -83,7 +83,7 @@ class MeetingController extends Controller
 
         $meeting->update($request->all());
 
-        return redirect()->route('senior.meetings.index')->with('success', 'Meeting updated.');
+        return redirect()->route(''.auth()->user()->custom_role.'.meetings.index')->with('success', 'Meeting updated.');
     }
 
     public function destroy($meeting)
@@ -93,6 +93,6 @@ class MeetingController extends Controller
         Meeting::where('id', $meeting)->update(array(
             'is_active' => 1
         ));
-        return redirect()->route('senior.meetings.index')->with('success', 'Meeting deleted.');
+        return redirect()->route(''.auth()->user()->custom_role.'.meetings.index')->with('success', 'Meeting deleted.');
     }
 }

@@ -50,7 +50,7 @@ class FamilyMemberManageController extends Controller
         //     ->where('owner', 'account_status', '!=', 2)
         //     ->orderBy('id', 'DESC')
         //     ->get();
-
+        // dd(auth()->user()->check_if_owner);
         if ($request->ajax()) {
 
             return DataTables::of($tenants)
@@ -132,13 +132,13 @@ class FamilyMemberManageController extends Controller
                             <i class="fas fa-ellipsis-h"></i>
                         </button>
                         <ul class="dropdown-menu">';
-                    if (auth()->user()->hasPermission('caregivers_update') || auth()->user()->check_if_owner == 4) {
+                    if (auth()->user()->hasPermission('caregivers_update') || auth()->user()->role_id == 4) {
                         $actions .= ' <li class="first"><a class="dropdown-item" href="' . route('familyOwner.edit_member', $tenant->users->id) . '">Edit</a></li>';
                     }
-                    if (auth()->user()->hasPermission('caregivers_delete') || auth()->user()->check_if_owner == 4) {
+                    if (auth()->user()->hasPermission('caregivers_delete') || auth()->user()->role_id == 4) {
                         $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="delete_member(' . $tenant->users->id . ')">Delete</a></li>';
                     }
-                    if (auth()->user()->check_if_owner == 4) {
+                    if (auth()->user()->role_id == 4) {
                         if ($tenant->users->account_status == 0) {
                             $actions .= '<li class="last"><a class="dropdown-item" href="javascript:;" onclick="inactivate_member(' . $tenant->users->id . ')">Inactivate</a></li>';
                         } else {
@@ -234,6 +234,12 @@ class FamilyMemberManageController extends Controller
     public function edit_member(Request $request, $id)
     {
         $user = User::findorfail($id);
+
+    //    return $user->newSubscription('default', 'price_1Rq1JFIqrFLrMDhXU2D6U369') // 'price_12345' = Stripe price ID
+    //             ->checkout([
+    //                 'success_url' => route('familyOwner.index'),
+    //                 'cancel_url' => route('familyOwner.index'),
+    //             ]);
 
         return view('family_owner.family_member.edit', compact('user'));
     }

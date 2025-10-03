@@ -11,6 +11,7 @@
 <body>
 
     <div class="page-box">
+        
         @include('layouts.caregiver.includes.sidebar')
         <div class="main-content">
             @include('layouts.caregiver.includes.header')

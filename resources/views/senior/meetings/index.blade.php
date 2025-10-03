@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <h3>📅 My Meetings</h3>
-    <a href="{{ route('senior.meetings.create') }}" class="btn btn-primary mb-3">+ Schedule Meeting</a>
+    <a href="{{ route(''.auth()->user()->custom_role.'.meetings.create') }}" class="btn btn-primary mb-3">Schedule Meeting</a>
 
     <table class="table table-bordered">
         <thead>
@@ -33,8 +33,8 @@
                     @endif     
                 </td>
                 <td>
-                    <a href="{{ route('senior.meetings.edit',$meeting->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('senior.meetings.destroy',$meeting->id) }}" method="POST" class="d-inline">
+                    <a href="{{ route(''.auth()->user()->custom_role.'.meetings.edit',$meeting->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ route(''.auth()->user()->custom_role.'.meetings.destroy',$meeting->id) }}" method="POST" class="d-inline">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-danger">Active / InActive Meeting</button>
                     </form>

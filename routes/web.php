@@ -44,6 +44,10 @@ Auth::routes();
 // Route::middleware('guest')->group(function () {
 
 Route::get('/check_role', [HomeController::class, 'check_role'])->name('check_role');
+Route::get('subscription/packages', [SubscriptionController::class, 'packages'])->name('subscription.packages');
+Route::get('subscription/payment', [SubscriptionController::class, 'payment'])->name('subscription.payment');
+Route::post('subscription/payment/store', [SubscriptionController::class, 'store'])->name('subscription.payment.store');
+
 // Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // Route::get('/register', [RegisterController::class, 'register'])->name('register');
 // Route::get('/login', [LoginController::class, 'login'])->name('login');
@@ -84,7 +88,13 @@ Route::middleware(CaregiverMiddleware::class)->group(function () {
 
 Route::middleware(FamilyMemberMiddleware::class)->group(function () {
 
-        Route::get('familyMember/meetings', [MeetingController::class, 'index'])->name('familyMember.meetings.index');
+    Route::get('familyMember/meetings', [MeetingController::class, 'index'])->name('familyMember.meetings.index');
+    Route::get('familyMember/meetings/create', [MeetingController::class, 'create'])->name('familyMember.meetings.create');
+    Route::post('familyMember/meetings/store', [MeetingController::class, 'store'])->name('familyMember.meetings.store');
+    Route::get('familyMember/meetings/{meeting}', [MeetingController::class, 'show'])->name('familyMember.meetings.show');
+    Route::get('familyMember/meetings/{meeting}/edit', [MeetingController::class, 'edit'])->name('familyMember.meetings.edit');
+    Route::put('familyMember/meetings/{meeting}', [MeetingController::class, 'update'])->name('familyMember.meetings.update');
+    Route::delete('familyMember/meetings/{meeting}', [MeetingController::class, 'destroy'])->name('familyMember.meetings.destroy');
 
 
     Route::get('familyMember/all-members', [FamilyMemberManageController::class, 'index'])->name('familyMember.all_members');
@@ -113,8 +123,6 @@ Route::middleware(FamilyMemberMiddleware::class)->group(function () {
     Route::put('familyMember/contribution/{contribution}', [ContributionController::class, 'update'])->name('familyMember.contribution.update');
     Route::delete('familyMember/contribution/{contribution}', [ContributionController::class, 'destroy'])->name('familyMember.contribution.destroy');
 
-    Route::get('familyMember/bills', [BillController::class, 'index'])->name('familyMember.bills.index');
-    Route::get('familyMember/bills/{bill}', [BillController::class, 'show'])->name('familyMember.bills.show');
     Route::get('familyMember/reimbursment/index', [ReimbursementController::class, 'index'])->name('familyMember.reimbursment.index');
     Route::get('familyMember/reimbursment/create', [ReimbursementController::class, 'create'])->name('familyMember.reimbursment.create');
     Route::post('familyMember/reimbursment/store', [ReimbursementController::class, 'store'])->name('familyMember.reimbursment.store');
@@ -135,6 +143,18 @@ Route::middleware(FamilyMemberMiddleware::class)->group(function () {
     Route::delete('familyMember/family-notes/{familyNote}/delete', [FamilyNoteController::class, 'destroy'])->name('familyMember.family-notes.destroy');
     Route::get('/familyMember/tasks', [TaskController::class, 'index'])->name('familyMember.tasks.index');     // DataTable page
 
+    // familyMember
+    Route::get('familyMember/bills', [BillController::class, 'index'])->name('familyMember.bills.index');
+    Route::get('familyMember/bills/create', [BillController::class, 'create'])->name('familyMember.bills.create');
+    Route::post('familyMember/bills', [BillController::class, 'store'])->name('familyMember.bills.store');
+    Route::get('familyMember/bills/{bill}', [BillController::class, 'show'])->name('familyMember.bills.show');
+    Route::get('familyMember/bills/{bill}/edit', [BillController::class, 'edit'])->name('familyMember.bills.edit');
+    Route::put('familyMember/bills/{bill}', [BillController::class, 'update'])->name('familyMember.bills.update');
+    Route::delete('familyMember/bills/{bill}', [BillController::class, 'destroy'])->name('familyMember.bills.destroy');
+    Route::post('familyMember/bills/{bill}/submit-payment', [BillController::class, 'submitPayment'])->name('familyMember.bills.submitPayment');
+    Route::post('familyMember/bill-payments/{payment}/review', [BillController::class, 'reviewPayment'])->name('familyMember.bills.reviewPayment');
+    Route::put('familyMember/bills/{bill}/approve', [BillController::class, 'approve'])->name('familyMember.bills.approve');
+    Route::put('familyMember/bills/{bill}/decline', [BillController::class, 'decline'])->name('familyMember.bills.decline');
 });
 
 Route::middleware([SeniorMiddleware::class])->group(function () {
@@ -201,7 +221,6 @@ Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
     Route::post('familyOwner/bills/{bill}/submit-payment', [BillController::class, 'submitPayment'])->name('familyOwner.bills.submitPayment');
     Route::post('familyOwner/bill-payments/{payment}/review', [BillController::class, 'reviewPayment'])->name('familyOwner.bills.reviewPayment');
     Route::put('familyOwner/bills/{bill}/approve', [BillController::class, 'approve'])->name('familyOwner.bills.approve');
-    Route::put('familyOwner/bills/{bill}/decline', [BillController::class, 'decline'])->name('familyOwner.bills.decline');
 
     Route::get('familyOwner/family-notes', [FamilyNoteController::class, 'index'])->name('familyOwner.family-notes.index');
     Route::get('familyOwner/family-notes/create', [FamilyNoteController::class, 'create'])->name('familyOwner.family-notes.create');
@@ -211,12 +230,16 @@ Route::middleware([FamilyOwnerMiddleware::class])->group(function () {
     Route::put('familyOwner/family-notes/{familyNote}/update', [FamilyNoteController::class, 'update'])->name('familyOwner.family-notes.update');
     Route::delete('familyOwner/family-notes/{familyNote}/delete', [FamilyNoteController::class, 'destroy'])->name('familyOwner.family-notes.destroy');
 
-    Route::get('familyOwner/subscriptions', [SubscriptionController::class, 'index'])->name('familyOwner.subscriptions.index');
 
     Route::get('/payment-methods', [PaymentMethodController::class, 'index'])->name('payment-methods.index');
     Route::post('/payment-methods/store', [PaymentMethodController::class, 'store'])->name('payment-methods.store');
     Route::post('/payment-methods/{id}/set-primary', [PaymentMethodController::class, 'setPrimary'])->name('payment-methods.setPrimary');
     Route::delete('/payment-methods/{id}/delete', [PaymentMethodController::class, 'destroy'])->name('payment-methods.destroy');
+
+    Route::get('/subscription/success', fn() => 'Subscription successful!')->name('subscription.success');
+    Route::get('/subscription/cancel', fn() => 'Subscription canceled!')->name('subscription.cancel');
+
+    Route::get('familyOwner/subscriptions', [SubscriptionController::class, 'index'])->name('familyOwner.subscriptions.index');
 
     // Toggle recurring subscription
     Route::post('/subscriptions/{id}/toggle-recurring', function ($id) {
