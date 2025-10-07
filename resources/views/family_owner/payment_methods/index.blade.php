@@ -1,59 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h2>💳 Payment Methods</h2>
+<div class="container mt-5">
+    <h3 class="mb-4">💳 My Saved Cards</h3>
 
-    {{-- <form method="POST" action="{{ route('payment-methods.store') }}" class="mb-4">
-        @csrf
-        <div class="row g-2">
-            <div class="col-md-3"><input type="text" name="card_brand" placeholder="Brand (Visa)" class="form-control" required></div>
-            <div class="col-md-2"><input type="text" name="card_last_four" placeholder="Last 4" class="form-control" required></div>
-            <div class="col-md-2"><input type="text" name="expiry_month" placeholder="MM" class="form-control" required></div>
-            <div class="col-md-2"><input type="text" name="expiry_year" placeholder="YYYY" class="form-control" required></div>
-            <div class="col-md-2"><button class="btn btn-primary w-100">Add Card</button></div>
-        </div>
-    </form> --}}
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
 
-    @if($methods->count())
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Brand</th>
-                    <th>Last 4</th>
-                    <th>Expiry</th>
-                    <th>Primary</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($methods as $method)
-                <tr>
-                    <td>{{ $method->card_brand }}</td>
-                    <td>**** {{ $method->card_last_four }}</td>
-                    <td>{{ $method->expiry_month }}/{{ $method->expiry_year }}</td>
-                    <td>
-                        @if($method->is_primary)
-                            <span class="badge bg-success">Primary</span>
+    <div class="row">
+        @forelse ($paymentMethods as $method)
+            @php
+                $card = $method->card;
+                $isPrimary = $method->id === $defaultPaymentMethod;
+            @endphp
+
+            <div class="col-md-4">
+                <div class="card shadow-sm mb-4 {{ $isPrimary ? 'border-primary' : '' }}">
+                    <div class="card-body text-center">
+                        <img src="{{ asset('images/cards/' . strtolower($card->brand) . '.png') }}"  alt="{{ ucfirst($card->brand) }}" width="50" class="mb-3">
+
+                        <h5 class="mb-2">{{ ucfirst($card->brand) }} •••• {{ $card->last4 }}</h5>
+                        <p class="text-muted mb-2">Exp: {{ $card->exp_month }}/{{ $card->exp_year }}</p>
+
+                        @if ($isPrimary)
+                            <span class="badge bg-primary">Primary</span>
                         @else
-                            <form method="POST" action="{{ route('payment-methods.setPrimary', $method->id) }}">
+                            <form action="{{ route('payment-methods.setPrimary', $method->id) }}" method="POST">
                                 @csrf
-                                <button class="btn btn-sm btn-outline-info">Set Primary</button>
+                                <input type="hidden" name="payment_method_id" value="{{ $method->id }}">
+                                <button type="submit" class="btn btn-outline-primary btn-sm">
+                                    Set as Primary
+                                </button>
                             </form>
                         @endif
-                    </td>
-                    <td>
-                        <form method="POST" action="{{ route('payment-methods.destroy', $method->id) }}">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-danger" onclick="return confirm('Remove this card?')">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    @else
-        <p class="text-muted">No cards added yet.</p>
-    @endif
+                    </div>
+                </div>
+            </div>
+        @empty
+            <p class="text-muted">No saved cards found.</p>
+        @endforelse
+    </div>
 </div>
 @endsection

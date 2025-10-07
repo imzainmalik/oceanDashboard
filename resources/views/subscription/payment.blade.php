@@ -11,6 +11,8 @@
 
         <input type="hidden" name="type" value="{{ $request->type }}"/>
         <input type="hidden" name="packge_price" value="{{ $request->price_id }}"/>
+        <input type="hidden" name="price" value="{{ $request->price }}"/>
+
     </form>
 @endsection
 @push('js')
