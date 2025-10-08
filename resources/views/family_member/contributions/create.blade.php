@@ -12,7 +12,7 @@
                     </ul>
                 </div>
             @endif
-        <form method="POST" action="{{ route('familyMember.contribution.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ route('' . auth()->user()->role->name . '.contribution.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="bill_id">Bill</label>
@@ -66,7 +66,7 @@
             </div>
 
             <button class="btn btn-success">Save</button>
-            <a href="{{ route('familyMember.contribution.index') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('' . auth()->user()->role->name . '.contribution.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 @endsection

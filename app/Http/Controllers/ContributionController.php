@@ -70,7 +70,7 @@ class ContributionController extends Controller
     public function store(Request $request)
     {
         // if (!auth()->user()->hasPermission('contributions_insert') || auth()->user()->check_if_owner == 4) abort(403);
-        check_pemission('contributions_insert', auth()->user()->role_id);
+        // check_pemission('contributions_insert', auth()->user()->role_id);
         $request->validate([
             'amount' => 'required|numeric|min:1',
             'type'   => 'required|in:0,1',
@@ -114,13 +114,13 @@ class ContributionController extends Controller
         // return back()->with('success', 'Payment submitted successfully and is pending review.');
         make_log($owner_id, auth()->user()->name, 'Added contribution', ' ' . auth()->user()->name . ' Added contribution ' . $type . ' ');
 
-        return redirect()->route('familyMember.contribution.index')->with('success', 'Payment submitted successfully and is pending review.');
+        return redirect()->route('' . auth()->user()->role->name . '.contribution.index')->with('success', 'Payment submitted successfully and is pending review.');
     }
 
     public function show(Contributions $contribution)
     {
         // if (!auth()->user()->hasPermission('contributions_show') || auth()->user()->check_if_owner == 4) abort(403);
-        check_pemission('contributions_show', auth()->user()->role_id);
+        // check_pemission('contributions_show', auth()->user()->role_id);
 
         return view('family_member.contributions.show', compact('contribution'));
     }

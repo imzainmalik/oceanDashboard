@@ -14,12 +14,14 @@ class FamilyNoteController extends Controller
     public function index()
     {
         $tenant = Tenant::where('child_id', auth()->user()->id)->first();
+        // dd($tenant);
         if ($tenant != null) {
             $ownerId = User::where('id', $tenant->owner_id)->value('id');
         } else {
             $ownerId = auth()->user()->id;
         }
-        $notes = FamilyNote::where('family_owner_id', $ownerId)->where('visibility', '!=', 'private')->latest()->get();
+        // dd($ownerId);
+        $notes = FamilyNote::where('family_owner_id', $ownerId)->latest()->get();
         return view('family_owner.family_notes.index', compact('notes'));
     }
 
@@ -30,12 +32,12 @@ class FamilyNoteController extends Controller
 
     public function store(Request $request)
     {
-        check_pemission('family_notes_insert', auth()->user()->role_id);
+        // check_pemission('family_notes_insert', auth()->user()->role_id);    
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'type' => 'required|in:note,feedback',
-            'visibility' => 'required|in:private,family',
+            // 'visibility' => 'required|in:private,family',
         ]);
 
         $tenant = Tenant::where('child_id', auth()->user()->id)->first();
@@ -52,7 +54,7 @@ class FamilyNoteController extends Controller
             'title' => $request->title,
             'content' => $request->content,
             'type' => $request->type,
-            'visibility' => $request->visibility,
+            'visibility' => 'family',
         ]);
 
         return redirect()->route('' . auth()->user()->custom_role . '.family-notes.index')->with('success', 'Note created successfully.');
@@ -68,18 +70,18 @@ class FamilyNoteController extends Controller
     public function edit(FamilyNote $familyNote)
     {
         
-        return view('family_owner.family_notes.edit', compact('familyNote'));
+        return view('family_owner.family_notes.create', compact('familyNote'));
     }
 
     public function update(Request $request, FamilyNote $familyNote)
     {
-        check_pemission('family_notes_update', auth()->user()->role_id);
+        // check_pemission('family_notes_update', auth()->user()->role_id);
 
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'type' => 'required|in:note,feedback',
-            'visibility' => 'required|in:private,family',
+            // 'visibility' => 'required|in:private,family',
         ]);
 
         $familyNote->update($request->all());

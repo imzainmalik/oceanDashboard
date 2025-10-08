@@ -16,7 +16,7 @@
                         <h3>My Contributions</h3>
                     </div>
                     <div class="col-10 d-flex justify-content-end">
-                        <a href="{{ route('familyMember.contribution.create') }}" class="btn btn-primary">Create
+                        <a href="{{ route('' . auth()->user()->role->name . '.contribution.create') }}" class="btn btn-primary">Create
                             contribution</a>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
             $('#contributions-table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('familyMember.contribution.index') }}",
+                ajax: "{{ route('' . auth()->user()->role->name . '.contribution.index') }}",
                 columns: [{
                         data: 'bill',
                         name: 'bill.title'

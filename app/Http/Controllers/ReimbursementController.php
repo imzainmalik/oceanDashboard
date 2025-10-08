@@ -30,7 +30,7 @@ class ReimbursementController extends Controller
     public function store(Request $request)
     {
         // if (!auth()->user()->hasPermission('reimbursements_insert') || auth()->user()->check_if_owner == 4) abort(403);
-        check_pemission('reimbursements_insert', auth()->user()->role_id);
+        // check_pemission('reimbursements_insert', auth()->user()->role_id);
 
         $request->validate([
             'amount' => 'required|numeric|min:1',
@@ -49,14 +49,14 @@ class ReimbursementController extends Controller
 
         make_log($tenant->owner_id, auth()->user()->name, 'Added Reimbursement', ' ' . auth()->user()->name . ' Added Reimbursement Request for ' . $request->amount . ' ');
 
-        return redirect()->route('familyMember.reimbursment.index')
+        return redirect()->route('' . auth()->user()->role->name . '.reimbursment.index')
             ->with('success', 'Reimbursement request submitted successfully.');
     }
 
     public function show(Reimbursement $reimbursement)
     {
         // if (!auth()->user()->hasPermission('reimbursements_show') || auth()->user()->check_if_owner == 4) abort(403);
-        check_pemission('reimbursements_show', auth()->user()->role_id);
+        // check_pemission('reimbursements_show', auth()->user()->role_id);
 
         $this->authorizeOwner($reimbursement);
         return view('family_member.reimbursements.show', compact('reimbursement'));
@@ -75,7 +75,7 @@ class ReimbursementController extends Controller
     public function update(Request $request, Reimbursement $reimbursement)
     {
         // if (!auth()->user()->hasPermission('reimbursements_update') || auth()->user()->check_if_owner == 4) abort(403);
-        check_pemission('reimbursements_update', auth()->user()->role_id);
+        // check_pemission('reimbursements_update', auth()->user()->role_id);
 
         $this->authorizeOwner($reimbursement);
 
@@ -91,19 +91,19 @@ class ReimbursementController extends Controller
             'reason' => $request->reason,
         ]);
 
-        return redirect()->route('familyMember.reimbursment.index')
+        return redirect()->route('' . auth()->user()->role->name . '.reimbursment.index')
             ->with('success', 'Reimbursement request updated successfully.');
     }
 
     public function destroy(Reimbursement $reimbursement)
     {
         // if (!auth()->user()->hasPermission('reimbursements_delete') || auth()->user()->check_if_owner == 4) abort(403);
-        check_pemission('reimbursements_delete', auth()->user()->role_id);
+        // check_pemission('reimbursements_delete', auth()->user()->role_id);
 
         $this->authorizeOwner($reimbursement);
         $reimbursement->delete();
 
-        return redirect()->route('familyMember.reimbursment.index')
+        return redirect()->route('' . auth()->user()->role->name . '.reimbursment.index')
             ->with('success', 'Reimbursement request deleted.');
     }
 

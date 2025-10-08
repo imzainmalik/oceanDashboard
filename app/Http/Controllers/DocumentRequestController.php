@@ -75,14 +75,18 @@ class DocumentRequestController extends Controller
             'message' => 'nullable|string|max:2000',
             'deadline_minutes' => 'required|integer|min:5|max:10080',
         ]);
+        if($request->doc_type == "0"){
+            // if (!auth()->user()->hasPermission('medical_docs_insert') || auth()->user()->check_if_owner == 4) abort(403);
+            check_pemission('documents_insert', auth()->user()->role_id);
+        }
         if($request->doc_type == "1"){
             check_pemission('medical_docs_insert', auth()->user()->role_id);
             // if (!auth()->user()->hasPermission('medical_docs_insert') || auth()->user()->check_if_owner == 4) abort(403);
         }else if($request->doc_type == "2"){
             // if (!auth()->user()->hasPermission('insurance_docs_insert') || auth()->user()->check_if_owner == 4) abort(403);
             check_pemission('insurance_docs_insert', auth()->user()->role_id);
-        }else{
-            check_pemission('documents_insert', auth()->user()->role_id);
+        }else if($request->doc_type == "3"){
+            check_pemission('emergency_docs_insert', auth()->user()->role_id);
             // if (!auth()->user()->hasPermission('documents_insert') || auth()->user()->check_if_owner == 4) abort(403);
         }
 
@@ -108,8 +112,11 @@ class DocumentRequestController extends Controller
 
     public function show(DocumentRequest $documentRequest)
     {
+        if($documentRequest->requester_id != auth()->user()->id || $documentRequest->target_user_id != auth()->user()->id){
+
+            check_pemission('documents_show', auth()->user()->role_id);
+        }
         // if (!auth()->user()->hasPermission('documents_show') || auth()->user()->check_if_owner == 4) abort(403);
-        check_pemission('documents_show', auth()->user()->role_id);
         $user = Auth::user();
  
         if ($documentRequest->status === 'pending' && $documentRequest->isExpired()) {

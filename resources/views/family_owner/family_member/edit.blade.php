@@ -266,8 +266,8 @@
                                     <div class="tab-pane fade show active" id="bills" role="tabpanel">
                                         @include('components.permissions', ['feature' => 'bills'])
                                         @include('components.permissions', ['feature' => 'bill_payments'])
-                                        @include('components.permissions', ['feature' => 'contributions'])
-                                        @include('components.permissions', ['feature' => 'reimbursements'])
+                                        {{-- @include('components.permissions', ['feature' => 'contributions']) --}}
+                                        {{-- @include('components.permissions', ['feature' => 'reimbursements']) --}}
                                         <div class="mt-3"><span class="badge bg-info">shortfall_tracking_show</span>
                                         </div>
                                     </div>

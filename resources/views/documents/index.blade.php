@@ -7,20 +7,22 @@
                 <button class="nav-link active" id="home-tab" data-toggle="tab" data-target="#home" type="button"
                     role="tab" aria-controls="home" aria-selected="true">Regular Document Vault</button>
             </li>
-             {{-- @if (auth()->user()->hasPermission('medical_docs_insert') || auth()->user()->check_if_owner == 4 != null) --}}
+            {{-- @if (auth()->user()->hasPermission('medical_docs_insert') || (auth()->user()->check_if_owner == 4) != null) --}}
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="profile-tab" data-toggle="tab" data-target="#profile" type="button"
                     role="tab" aria-controls="profile" aria-selected="false">Medical Document Vault</button>
             </li>
             {{-- @endif --}}
-            {{-- @if (auth()->user()->hasPermission('insurance_docs_insert') || auth()->user()->check_if_owner == 4 != null) --}}
+            {{-- @if (auth()->user()->hasPermission('insurance_docs_insert') || (auth()->user()->check_if_owner == 4) != null) --}}
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="insurance-doc-tab" data-toggle="tab" data-target="#insurance-doc-body" type="button"
-                    role="tab" aria-controls="profile" aria-selected="false">Insurance Document Vault</button>
+                <button class="nav-link" id="insurance-doc-tab" data-toggle="tab" data-target="#insurance-doc-body"
+                    type="button" role="tab" aria-controls="insurance-doc-body" aria-selected="false">Insurance
+                    Document Vault</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="emegency-doc-tab" data-toggle="tab" data-target="#emegency-doc-body" type="button"
-                    role="tab" aria-controls="profile" aria-selected="false">Emergency Document Vault</button>
+                <button class="nav-link" id="emegency-doc-tab" data-toggle="tab" data-target="#emegency-doc-body"
+                    type="button" role="tab" aria-controls="emegency-doc-body" aria-selected="false">Emergency Document
+                    Vault</button>
             </li>
             {{-- @endif --}}
         </ul>
@@ -55,48 +57,48 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($requests as $req)
-                                     @if ($req->type == 0)
-                                        <tr>
-                                            <td>{{ $req->id }}</td>
-                                            <td>{{ $req->title }}</td>
-                                            <td>{{ $req->requester->name }}</td>
-                                            <td>{{ $req->target->name }}</td>
-                                            <td>
-                                                @if ($req->status === 'pending')
-                                                    <span class="badge bg-warning text-dark">Pending</span>
-                                                @elseif($req->status === 'submitted')
-                                                    <span class="badge bg-success">Submitted</span>
-                                                @elseif($req->status === 'expired')
-                                                    <span class="badge bg-secondary">Expired</span>
-                                                @else
-                                                    <span class="badge bg-danger">Cancelled</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @if ($req->status === 'pending')
-                                                    <span class="countdown"
-                                                        data-deadline="{{ $req->expires_at->toIsoString() }}"></span>
-                                                @else
-                                                    {{ $req->expires_at->format('d M Y H:i') }}
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <a href="{{ route('document.requests.show', $req->id) }}"
-                                                    class="btn btn-sm btn-primary">View</a>
-                                                @if ($req->status === 'submitted' && $req->document)
-                                                    <a href="{{ route('document.requests.download', $req->id) }}"
-                                                        class="btn btn-sm btn-success">Download</a>
-                                                @endif
-                                                @if (auth()->id() === $req->requester_id && $req->status === 'pending')
-                                                    <form action="{{ route('document.requests.cancel', $req->id) }}"
-                                                        method="POST" class="d-inline">
-                                                        @csrf
-                                                        <button class="btn btn-sm btn-danger"
-                                                            onclick="return confirm('Cancel this request?')">Cancel</button>
-                                                    </form>
-                                                @endif
-                                            </td>
-                                        </tr> 
+                                        @if ($req->type == 0)
+                                            <tr>
+                                                <td>{{ $req->id }}</td>
+                                                <td>{{ $req->title }}</td>
+                                                <td>{{ $req->requester->name }}</td>
+                                                <td>{{ $req->target->name }}</td>
+                                                <td>
+                                                    @if ($req->status === 'pending')
+                                                        <span class="badge bg-warning text-dark">Pending</span>
+                                                    @elseif($req->status === 'submitted')
+                                                        <span class="badge bg-success">Submitted</span>
+                                                    @elseif($req->status === 'expired')
+                                                        <span class="badge bg-secondary">Expired</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Cancelled</span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if ($req->status === 'pending')
+                                                        <span class="countdown"
+                                                            data-deadline="{{ $req->expires_at->toIsoString() }}"></span>
+                                                    @else
+                                                        {{ $req->expires_at->format('d M Y H:i') }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('document.requests.show', $req->id) }}"
+                                                        class="btn btn-sm btn-primary">View</a>
+                                                    @if ($req->status === 'submitted' && $req->document)
+                                                        <a href="{{ route('document.requests.download', $req->id) }}"
+                                                            class="btn btn-sm btn-success">Download</a>
+                                                    @endif
+                                                    @if (auth()->id() === $req->requester_id && $req->status === 'pending')
+                                                        <form action="{{ route('document.requests.cancel', $req->id) }}"
+                                                            method="POST" class="d-inline">
+                                                            @csrf
+                                                            <button class="btn btn-sm btn-danger"
+                                                                onclick="return confirm('Cancel this request?')">Cancel</button>
+                                                        </form>
+                                                    @endif
+                                                </td>
+                                            </tr>
                                         @endif
                                     @endforeach
                                 </tbody>
@@ -189,9 +191,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <div class="tab-pane fade" id="insurance-doc-body" role="tabpanel" aria-labelledby="profile-tab">
+            </div> 
+            <div class="tab-pane fade" id="insurance-doc-body" role="tabpanel" aria-labelledby="insurance-tab">
                 <div class="container mt-4">
                     <div class="card shadow-sm">
                         <div class="card-header">
@@ -276,7 +277,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="emegency-doc-body" role="tabpanel" aria-labelledby="profile-tab">
+            <div class="tab-pane fade" id="emegency-doc-body" role="tabpanel" aria-labelledby="emegency-tab">
                 <div class="container mt-4">
                     <div class="card shadow-sm">
                         <div class="card-header">
@@ -366,9 +367,12 @@
 @endsection
 
 @push('js')
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
-        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous">
-    </script>
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
+        crossorigin="anonymous"></script>
+
 
     <script>
         function updateCountdowns() {

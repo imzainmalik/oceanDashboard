@@ -6,9 +6,9 @@
 
     <form method="POST" action="{{ isset($familyNote) ? route(''.auth()->user()->custom_role.'.family-notes.update', $familyNote) : route(''.auth()->user()->custom_role.'.family-notes.store') }}">
         @csrf
-        @if(isset($familyNote))
+        {{-- @if(isset($familyNote))
             @method('PUT')
-        @endif
+        @endif --}}
 
         <div class="form-group mb-3">
             <label>Title</label>
@@ -28,13 +28,13 @@
             </select>
         </div>
 
-        <div class="form-group mb-3">
+        {{-- <div class="form-group mb-3">
             <label>Visibility</label>
             <select name="visibility" class="form-control">
                 <option value="family" {{ old('visibility', $familyNote->visibility ?? '')=='family'?'selected':'' }}>Family</option>
                 <option value="private" {{ old('visibility', $familyNote->visibility ?? '')=='private'?'selected':'' }}>Private</option>
             </select>
-        </div>
+        </div> --}}
 
         <button type="submit" class="btn btn-success">{{ isset($familyNote) ? 'Update' : 'Save' }}</button>
         <a href="{{ route(''.auth()->user()->custom_role.'.family-notes.index') }}" class="btn btn-secondary">Cancel</a>

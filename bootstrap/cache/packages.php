@@ -11,6 +11,17 @@
       0 => 'Barryvdh\\DomPDF\\ServiceProvider',
     ),
   ),
+  'ladumor/laravel-pwa' => 
+  array (
+    'aliases' => 
+    array (
+      'LaravelPwa' => 'Ladumor\\LaravelPwa\\LaravelPwa',
+    ),
+    'providers' => 
+    array (
+      0 => '\\Ladumor\\LaravelPwa\\PWAServiceProvider',
+    ),
+  ),
   'laravel/cashier' => 
   array (
     'providers' => 

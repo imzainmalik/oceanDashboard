@@ -2,6 +2,8 @@
 
 @section('content')
     {{-- @dd(auth()->user()->role); --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    {{-- @dd('sss'); --}}
     <div class="content-card" bis_skin_checked="1">
         <div class="container-fluid p-0" bis_skin_checked="1">
             <div class="page-title" bis_skin_checked="1">
@@ -87,12 +89,7 @@
 @endsection
 
 @push('js')
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- DataTables -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
         $(function() {

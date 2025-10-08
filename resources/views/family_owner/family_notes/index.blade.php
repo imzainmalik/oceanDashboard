@@ -22,7 +22,7 @@
                         <tr>
                             <th>Title</th>
                             <th>Type</th>
-                            <th>Visibility</th>
+                            {{-- <th>Visibility</th> --}}
                             <th>Created At</th>
                             <th>Actions</th>
                         </tr>
@@ -33,14 +33,14 @@
                             <tr>
                                 <td>{{ $note->title }}</td>
                                 <td>{{ ucfirst($note->type) }}</td>
-                                <td>{{ ucfirst($note->visibility) }}</td>
+                                {{-- <td>{{ ucfirst($note->visibility) }}</td> --}}
                                 <td>{{ $note->created_at->format('d M Y') }}</td>
                                 <td>
-                                    <a href="{{ route('familyOwner.family-notes.show', $note) }}"
+                                    <a href="{{ route(''.auth()->user()->custom_role.'.family-notes.show', $note) }}"
                                         class="btn btn-info btn-sm">View</a>
-                                    <a href="{{ route('familyOwner.family-notes.edit', $note) }}"
+                                    <a href="{{ route(''.auth()->user()->custom_role.'.family-notes.edit', $note) }}"
                                         class="btn btn-warning btn-sm">Edit</a>
-                                    <form action="{{ route('familyOwner.family-notes.destroy', $note) }}" method="POST"
+                                    <form action="{{ route(''.auth()->user()->custom_role.'.family-notes.destroy', $note) }}" method="POST"
                                         style="display:inline-block">
                                         @csrf @method('DELETE')
                                         <button class="btn btn-danger btn-sm"

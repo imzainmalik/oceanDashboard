@@ -23,6 +23,7 @@ class VotingPoolController extends Controller
 
     public function index()
     {
+        // dd(auth()->user()->id);
         return view('family_owner.pools.index');
     }
 

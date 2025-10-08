@@ -4,7 +4,7 @@
 <div class="container">
     <h3>My Reimbursements</h3>
 
-    <a href="{{ route('familyMember.reimbursment.create') }}" class="btn btn-primary mb-3">Request Reimbursement</a>
+    <a href="{{ route('' . auth()->user()->role->name . '.reimbursment.create') }}" class="btn btn-primary mb-3">Request Reimbursement</a>
 
     <table class="table table-bordered">
         <thead>
@@ -33,8 +33,8 @@
                 </td>
                 <td>{{ $r->created_at->format('M d, Y') }}</td>
                 <td>
-                    <a href="{{ route('familyMember.reimbursment.edit',$r->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form method="POST" action="{{ route('familyMember.reimbursment.destroy',$r->id) }}" style="display:inline">
+                    <a href="{{ route('' . auth()->user()->role->name . '.reimbursment.edit',$r->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form method="POST" action="{{ route('' . auth()->user()->role->name . '.reimbursment.destroy',$r->id) }}" style="display:inline">
                         @csrf @method('DELETE')
                         <button class="btn btn-sm btn-danger" onclick="return confirm('Delete this reimbursement?')">Delete</button>
                     </form>

@@ -7,14 +7,14 @@
         }
 
         /* div#download_monthly {
-                                            background-color: #0c0c0c9c;
-                                        } */
+                                                background-color: #0c0c0c9c;
+                                            } */
     </style>
     <div class="container">
         <h5 class="mb-4">All Bill Requests</h5>
 
         <div class="card shadow">
-            <a href="{{ route(''.auth()->user()->role->name.'.bills.create') }}" class="btn btn-primary">Create Bill</a>
+            <a href="{{ route('' . auth()->user()->role->name . '.bills.create') }}" class="btn btn-primary">Create Bill</a>
             <div class="card-body">
                 <table class="table table-striped table-hover align-middle">
                     <thead>

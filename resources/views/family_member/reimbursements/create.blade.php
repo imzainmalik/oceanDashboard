@@ -13,7 +13,7 @@
                 </ul>
             </div>
         @endif
-        <form method="POST" action="{{ route('familyMember.reimbursment.store') }}">
+        <form method="POST" action="{{ route('' . auth()->user()->role->name . '.reimbursment.store') }}">
             @csrf
 
             <div class="mb-3">
@@ -37,7 +37,7 @@
             </div>
 
             <button class="btn btn-success">Submit</button>
-            <a href="{{ route('familyMember.reimbursment.index') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ route('' . auth()->user()->role->name . '.reimbursment.index') }}" class="btn btn-secondary">Cancel</a>
         </form>
     </div>
 @endsection

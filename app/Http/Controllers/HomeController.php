@@ -39,10 +39,12 @@ class HomeController extends Controller
             $subscription = null;
         }
 
-        // dd(auth()->user()->role_id == 4 || );
         if (auth()->user()->role_id == 4) {
             if($subscription == null || $subscription->status != "active"){
+                // dd(auth()->user()->role_id);
                 return redirect()->route('subscription.packages');
+            }else{
+                 return redirect()->route('familyOwner.index');
             }
         } else {
             // dd(auth()->user()->role);

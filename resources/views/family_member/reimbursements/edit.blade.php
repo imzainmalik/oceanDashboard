@@ -18,7 +18,7 @@
                         </ul>
                     </div>
                 @endif
-                <form method="POST" action="{{ route('familyMember.reimbursment.update', $reimbursement->id) }}">
+                <form method="POST" action="{{ route('' . auth()->user()->role->name . '.reimbursment.update', $reimbursement->id) }}">
                     @csrf @method('PUT')
 
                     <div class="mb-3">
@@ -45,7 +45,7 @@
                     </div>
 
                     <button class="btn btn-success">Update</button>
-                    <a href="{{ route('familyMember.reimbursment.index') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route('' . auth()->user()->role->name . '.reimbursment.index') }}" class="btn btn-secondary">Cancel</a>
                 </form>
             </div>
         </div>

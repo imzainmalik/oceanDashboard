@@ -6,7 +6,7 @@
 
         <div class="card shadow">
             <div class="card-body">
-                <form action="{{ route('familyOwner.bills.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route(''.auth()->user()->role->name.'.bills.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <div class="mb-3">
@@ -63,7 +63,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Submit Bill Request</button>
-                    <a href="{{ route('familyOwner.bills.index') }}" class="btn btn-secondary">Cancel</a>
+                    <a href="{{ route(''.auth()->user()->role->name.'.bills.index') }}" class="btn btn-secondary">Cancel</a>
                 </form>
             </div>
         </div>
