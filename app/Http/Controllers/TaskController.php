@@ -55,6 +55,67 @@ class TaskController extends Controller
                 ->make(true);
         }
 
+        if ($request->ajax()) {
+            return DataTables::of($tasks)
+                ->addColumn('name', function ($row) {
+                    $user = $row->assignee ?? $row->owner;
+                            $image = $user && $user->profile_image
+                        ? asset('display_picture/' . $user->profile_image)
+                        : asset('family_owner/assets/images/user_not_found.png');
+                    $name = $user?->name ?? 'N/A';
+
+                    return '<div class="d-flex align-items-center">
+                                <img src="' . $image . '" class="rounded-circle me-2" width="40" height="40" alt="User">
+                                <span>' . e($name) . '</span>
+                            </div>';
+                })
+                
+                ->addColumn('task', fn($row) => '<strong>' . e(ucfirst($row->title ?? '-')) . '</strong>')
+                
+                ->addColumn('assigned_on', fn($row) => \Carbon\Carbon::parse($row->created_at)->format('m-d-Y'))
+
+                ->addColumn('status', function ($row) {
+                    $colorMap = [
+                        'accepted' => 'green',
+                        'declined' => 'red',
+                        'unread' => 'purple',
+                        'seen/no-response' => 'orange',
+                    ];
+                    $color = $colorMap[strtolower($row->status)] ?? 'gray';
+                    return '<span style="color:' . $color . '; font-weight:500;">' . ucwords($row->status) . '</span>';
+                })
+
+                ->addColumn('actions', function ($row) {
+                    $btns = '';
+
+                    $btns .= '<li><a class="dropdown-item" href="' . route('familyOwner.tasks.show', $row->id) . '">View</a></li>';
+
+                    if (auth()->user()->role->id == 4) {
+                        $btns .= '<li><a class="dropdown-item" href="' . route('familyOwner.tasks.edit', $row->id) . '">Edit</a></li>';
+                        $btns .= '<li>
+                    <form action="' . route('familyOwner.tasks.destroy', $row->id) . '" method="POST" id="delete_' . $row->id . '">
+                        ' . csrf_field() . method_field('DELETE') . '
+                        <button type="submit" class="dropdown-item text-danger" onclick="return confirm(\'Delete this task?\')">Delete</button>
+                    </form>
+                </li>';
+                    }
+
+                    return '
+                <div class="dropdown text-end">
+                    <button class="btn btn-light btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        ' . $btns . '
+                    </ul>
+                </div>';
+                })
+
+                ->rawColumns(['name', 'task', 'status', 'assigned_on', 'actions'])
+                ->make(true);
+        }
+
+
         return view('tasks.index', compact('tasks'));
     }
 
@@ -142,7 +203,7 @@ class TaskController extends Controller
 
     public function comment_store(Request $request, Task $task)
     {
-       // dd($request->all());
+        // dd($request->all());
         $user = auth()->user();
 
         if (! in_array($user->role->name, ['familyOwner']) && $user->id !== $task->assignee_id) {

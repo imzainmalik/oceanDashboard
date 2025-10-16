@@ -15,7 +15,10 @@ class VotingCommentController extends Model
      *
      * @return void
      */
- 
+     public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
 
       public function store(Request $request, $pool)

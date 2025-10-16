@@ -14,6 +14,7 @@ use App\Http\Controllers\FamilyOwnerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LogController;
 use App\Http\Controllers\MeetingController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ReimbursementController;
 use App\Http\Controllers\ReportController;
@@ -72,6 +73,12 @@ Route::post('/document/requests/{documentRequest}/submit', [DocumentRequestContr
 Route::get('/document/requests/{documentRequest}/download', [DocumentRequestController::class, 'download'])->name('document.requests.download');
 Route::post('/document/requests/{documentRequest}/cancel', [DocumentRequestController::class, 'cancel'])->name('document.requests.cancel');
 
+
+
+Route::get('/message/inbox', [MessageController::class, 'index'])->name('message.index');
+Route::get('/message/create_chatroom', [MessageController::class, 'create_chat_room'])->name('message.create_chat_room');
+Route::get('/message/family-chat/{room_id}', [MessageController::class, 'family_chat'])->name('message.family_chat');
+
 Route::middleware(SuperAdminMiddleware::class)->group(function () {
     Route::get('/admin/dashboard', [SuperAdminController::class, 'index'])->name('superadmin.index');
 });
@@ -126,7 +133,6 @@ Route::middleware(CaregiverMiddleware::class)->group(function () {
     Route::put('careGiver/voting/{voting}', [VotingPoolController::class, 'update'])->name('careGiver.pools.update');
     Route::post('careGiver/voting/{voting}/comment', [VotingCommentController::class, 'store'])->name('careGiver.voting.comment.store');
     Route::post('careGiver/voting/{voting}/vote', [VoteController::class, 'store'])->name('careGiver.voting.vote');
-
 });
 
 

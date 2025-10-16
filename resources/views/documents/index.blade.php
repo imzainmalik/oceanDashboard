@@ -56,10 +56,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $count = 1;
+                                    @endphp
                                     @foreach ($requests as $req)
                                         @if ($req->type == 0)
                                             <tr>
-                                                <td>{{ $req->id }}</td>
+                                                <td>{{ $count++ }}</td>
                                                 <td>{{ $req->title }}</td>
                                                 <td>{{ $req->requester->name }}</td>
                                                 <td>{{ $req->target->name }}</td>
@@ -136,10 +139,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $count = 1;
+                                    @endphp
                                     @forelse ($requests as $req)
                                         @if ($req->type == 1)
                                             <tr>
-                                                <td>{{ $req->id }}</td>
+                                                <td>{{ $count++ }}</td>
                                                 <td>{{ $req->title }}</td>
                                                 <td>{{ $req->requester->name }}</td>
                                                 <td>{{ $req->target->name }}</td>
@@ -191,7 +197,7 @@
                         </div>
                     </div>
                 </div>
-            </div> 
+            </div>
             <div class="tab-pane fade" id="insurance-doc-body" role="tabpanel" aria-labelledby="insurance-tab">
                 <div class="container mt-4">
                     <div class="card shadow-sm">
@@ -221,10 +227,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $count = 1;
+                                    @endphp
                                     @forelse ($requests as $req)
                                         @if ($req->type == 2)
                                             <tr>
-                                                <td>{{ $req->id }}</td>
+                                                <td>{{ $count++ }}</td>
                                                 <td>{{ $req->title }}</td>
                                                 <td>{{ $req->requester->name }}</td>
                                                 <td>{{ $req->target->name }}</td>
@@ -283,7 +292,7 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-3">
-                                    <h5>Insurance Document Requests</h5>
+                                    <h5>Emergency Document Requests</h5>
                                 </div>
                                 <div class="col-9 d-flex justify-content-end">
                                     <a href="{{ route('document.requests.create') }}"
@@ -306,10 +315,13 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @php
+                                        $count = 1;
+                                    @endphp
                                     @forelse ($requests as $req)
                                         @if ($req->type == 3)
                                             <tr>
-                                                <td>{{ $req->id }}</td>
+                                                <td>{{ $count++ }}</td>
                                                 <td>{{ $req->title }}</td>
                                                 <td>{{ $req->requester->name }}</td>
                                                 <td>{{ $req->target->name }}</td>
@@ -370,8 +382,8 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"
-        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+"
-        crossorigin="anonymous"></script>
+        integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous">
+    </script>
 
 
     <script>

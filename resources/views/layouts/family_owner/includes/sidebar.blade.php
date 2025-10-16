@@ -24,6 +24,12 @@
                                 Overview
                             </a>
                         </li>
+                         <li>
+                            <a href="{{ route('message.index') }}" class="nav-item nav-link">
+                                <img src="{{ asset('family_owner/assets/images/menu-icon1.svg') }}" alt="">
+                                Inbox
+                            </a>
+                        </li>
                         <li>
                             <a href="{{ route('familyOwner.all_members') }}"><img
                                     src="{{ asset('family_owner/assets/images/menu-icon1.svg') }}" alt="">

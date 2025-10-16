@@ -1,6 +1,8 @@
 {{-- @dd(auth()->user()); --}}
 
 <meta name="theme-color" content="#6777ef"/>
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
 <link rel="manifest" href="{{ asset('manifest.json') }}">
 
@@ -8,7 +10,7 @@
 @if (auth()->user()->role->id == 5)
     @include('layouts.caregiver.layout')
 @elseif(auth()->user()->role->id == 1)
-    @include('layouts.superadmin.layout')
+    @include('layouts.caregiver.layout')
 @elseif(auth()->user()->role->id == 2)
     @include('layouts.senior.layout')
 @elseif(auth()->user()->role->id == 3)

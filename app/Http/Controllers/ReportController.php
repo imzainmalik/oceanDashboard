@@ -53,7 +53,7 @@ class ReportController extends Controller
     }
 
     public function monthly_report(Request $request)
-    {
+    { 
         $startOfMonth = \Carbon\Carbon::parse($request->start_date)->startOfDay();
         $endOfMonth = \Carbon\Carbon::parse($request->end_date)->endOfDay();
 
