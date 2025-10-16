@@ -1,0 +1,45 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="container mt-4">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <h3>Edit Task</h3>
+        <form action="{{ route('familyOwner.tasks.update_task', $task->id) }}" method="post">
+            @csrf
+            <div class="mb-3">
+                <label>Title</label>
+                <input type="text" name="title" class="form-control" value="{{ $task->title }}" required>
+            </div>
+            <div class="mb-3">
+                <label>Type</label>
+                <select name="type" class="form-control" required>
+                    <option value="medical" @if ($task->type == 'medical') selected @endif>Medical</option>
+                    <option value="non-medical" @if ($task->type == 'non-medical') selected @endif>Non-Medical</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>Assign To</label>
+                <select name="assignee_id" class="form-control" required>
+                    <option disabled selected>Select User to Assisgn this task</option>
+                    @foreach ($tenants as $tenant)
+                        <option value="{{ $tenant->users->id }}" @if ($task->assignee_id == $tenant->users->id) selected @endif>
+                            {{ $tenant->users->name }} ({{ $tenant->users->email }})</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-3">
+                <label>Details</label>
+                <textarea name="details" class="form-control">{{ $task->details }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+@endsection

@@ -1,0 +1,6 @@
+[13-Oct-2025 19:51:14 UTC] PHP Warning:  require(/home/v13webtestsdev/public_htmlvendor/autoload.php): Failed to open stream: No such file or directory in /home/v13webtestsdev/public_html/index.php on line 14
+[13-Oct-2025 19:51:14 UTC] PHP Warning:  require(/home/v13webtestsdev/public_htmlvendor/autoload.php): Failed to open stream: No such file or directory in /home/v13webtestsdev/public_html/index.php on line 14
+[13-Oct-2025 19:51:14 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/v13webtestsdev/public_htmlvendor/autoload.php' (include_path='.:/opt/cpanel/ea-php82/root/usr/share/pear') in /home/v13webtestsdev/public_html/index.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/v13webtestsdev/public_html/index.php on line 14
